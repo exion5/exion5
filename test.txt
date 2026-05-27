@@ -1,1 +1,7 @@
-testing vscode
+I design embedded systems, lay out PCBs, and write the firmware that runs on them. I've worked through the whole design process from creating circuit schematics, to debugging RF signals, to designing final 3D enclosures.
+My interest in hardware started as a kid when I broke my Nintendo Switch. After getting it repaired by an Electrical Engineer, I became fascinated by how such a small device could hold so many systems that work together. It sparked my curiosity about how electronic devices are designed at each level. It pushed me to start learning more about circuits and acted as my first stepping stone in becoming an Electrical Engineer.
+
+Since then I've hand-wired a mechanical keyboard, built a Raspberry Pi handheld console, and created an IEEE Technical Design award-winning environmental monitoring system integrating mmWave radar, particulate sensors, and a live web dashboard on a Pi Zero 2W.
+
+Most recently I took a full custom PCB from concept to fabrication for my RC Drone Project, where I designed an Arduino Nano equivalent with integrated boost converter, LiPo charger, USB bridge, and battery protection in KiCad, fabricated at JLCPCB.
+

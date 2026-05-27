@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Custom Arduino PCB — Ethan Xiong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --fr4-dark:#1A2B1E;--fr4-mid:#1E3323;--fr4-light:#243D29;--fr4-surface:#2A4430;
+  --copper:#C8821A;--copper-dim:#8A5510;--copper-bg:#2A1E0A;
+  --gold:#E8A830;--gold-dim:#A06A10;
+  --silk:#EEF2EC;--silk-dim:#A8B8A4;--silk-faint:#607060;
+  --border:rgba(200,130,26,0.15);--border2:rgba(200,130,26,0.30);--border3:rgba(200,130,26,0.50);
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'IBM Plex Serif',serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--fr4-dark);color:var(--silk);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,130,26,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,130,26,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(200,130,26,0.12) 1px,transparent 1px);background-size:48px 48px;background-position:24px 24px;pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;background:rgba(26,43,30,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2)}
+.nav-logo{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--gold);text-decoration:none;letter-spacing:0.04em;display:flex;align-items:center;gap:10px}
+.nav-logo::before{content:'';display:inline-block;width:18px;height:18px;border:1.5px solid var(--copper);border-radius:50%;flex-shrink:0}
+.nav-back{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--silk-dim);text-decoration:none;transition:color 0.15s;display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--gold)}
+.container{max-width:860px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1}
+.project-hero{padding:9rem 0 4rem}
+.project-refdes{font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--silk-faint);margin-bottom:1.25rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.1s}
+.project-title{font-family:var(--serif);font-size:clamp(2.5rem,7vw,5rem);font-weight:300;font-style:italic;line-height:1.05;letter-spacing:-0.02em;color:var(--silk);margin-bottom:1rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.2s}
+.project-subtitle{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.3s}
+.project-lede{font-size:16px;font-weight:300;color:var(--silk-dim);max-width:600px;line-height:1.85;opacity:0;animation:fadeUp 0.5s ease forwards 0.4s}
+.spec-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border2);border-radius:2px;overflow:hidden;margin:3rem 0}
+.spec-cell{background:var(--fr4-mid);padding:1.25rem 1rem}
+.spec-label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--silk-faint);margin-bottom:5px}
+.spec-value{font-family:var(--mono);font-size:12px;color:var(--silk)}
+.spec-value .copper{color:var(--copper)}
+.content-section{padding:3rem 0;border-top:1px solid var(--border)}
+.section-heading{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--copper);margin-bottom:2rem}
+.section-heading::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)}
+.section-heading .ref{color:var(--silk-faint);font-size:9px}
+.prose{font-size:14px;font-weight:300;color:var(--silk-dim);line-height:1.9;max-width:680px}
+.prose p{margin-bottom:1.25rem}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--silk);font-weight:500}
+.prose .copper{color:var(--copper)}
+.code-block{background:var(--fr4-surface);border:1px solid var(--border2);border-radius:2px;overflow:hidden;margin:1.5rem 0}
+.code-header{background:var(--fr4-light);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper)}
+.code-file{font-family:var(--mono);font-size:10px;color:var(--silk-faint)}
+.code-block pre{padding:1.25rem 1.5rem;overflow-x:auto}
+.code-block code{font-family:var(--mono);font-size:12px;color:var(--silk-dim);line-height:1.8;white-space:pre}
+.kw{color:var(--copper)}.fn{color:var(--gold)}.cm{color:var(--silk-faint);font-style:italic}.str{color:#8FBF8F}.num{color:#A8C8A8}
+.callout{background:var(--fr4-mid);border:1px solid var(--border2);border-left:3px solid var(--copper);border-radius:2px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:13px;color:var(--silk-dim);line-height:1.8}
+.callout strong{color:var(--silk)}
+.callout .label{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--copper);display:block;margin-bottom:6px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:1.5rem 0}
+.info-card{background:var(--fr4-mid);border:1px solid var(--border);border-radius:2px;overflow:hidden}
+.info-card-header{background:var(--fr4-light);border-bottom:1px solid var(--border);padding:8px 14px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper)}
+.info-card-body{padding:1rem 1.25rem}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;gap:1rem}
+.info-row:last-child{border-bottom:none}
+.info-key{font-family:var(--mono);color:var(--silk-faint);font-size:11px;flex-shrink:0}
+.info-val{color:var(--silk);text-align:right}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:1.5rem}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;padding:3px 8px;border-radius:1px;background:var(--fr4-surface);color:var(--silk-dim);border:1px solid var(--border)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;margin-top:4rem}
+footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint)}
+footer .copper{color:var(--copper)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.spec-bar{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.container{padding:0 1.25rem}nav{padding:0 1.25rem}footer{flex-direction:column;gap:0.5rem;text-align:center}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html">ETHAN</a>
+  <a class="nav-back" href="../index.html">← Back to portfolio</a>
+</nav>
+
+<div class="container">
+  <div class="project-hero">
+    <p class="project-refdes">J3 · Project 03 · 2024</p>
+    <h1 class="project-title">Custom Arduino PCB</h1>
+    <p class="project-subtitle">ATmega328P Board — KiCad to JLCPCB</p>
+    <p class="project-lede">
+      A full Arduino Nano equivalent designed from scratch in KiCad — integrating power management,
+      USB communication, LiPo charging, and battery protection on a 2-layer board fabricated at JLCPCB.
+    </p>
+  </div>
+
+  <div class="spec-bar">
+    <div class="spec-cell"><p class="spec-label">MCU</p><p class="spec-value">ATmega328P</p></div>
+    <div class="spec-cell"><p class="spec-label">Layers</p><p class="spec-value">2-layer</p></div>
+    <div class="spec-cell"><p class="spec-label">EDA</p><p class="spec-value">KiCad</p></div>
+    <div class="spec-cell"><p class="spec-label">Fab</p><p class="spec-value"><span class="copper">JLCPCB</span></p></div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
+    <div class="prose">
+      <p>
+        The goal was to design a fully self-contained microcontroller board that could replace an
+        Arduino Nano in the RC transmitter project — but with integrated LiPo charging and battery
+        management, removing the need for an external charger. Everything from USB connectivity to
+        5V boost conversion had to fit on a small 2-layer board.
+      </p>
+      <p>
+        The board went through multiple schematic review iterations before layout — every subsystem
+        (power, USB, protection, charging) was verified independently before being connected together.
+      </p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S2 ·</span> Power Architecture</p>
+    <div class="prose">
+      <p>
+        The power system has four cascaded stages: <strong>USB/battery input → battery protection →
+        LiPo charger → boost converter → 5V rail → LDO → 3.3V rail.</strong>
+        Each stage was selected and calculated individually.
+      </p>
+      <p>
+        The <strong>TPS61022 boost converter</strong> generates 5V from the LiPo's 3.0–4.2V range.
+        The output voltage is set by a resistor divider on the feedback pin. The TPS61022 uses a
+        <strong class="copper">0.6V internal reference</strong>, so the divider was calculated as:
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">Math</span>
+        <span class="code-file">TPS61022 feedback divider</span>
+      </div>
+      <pre><code><span class="cm"># TPS61022 feedback equation:</span>
+<span class="cm"># V_out = V_ref × (1 + R10/R11)</span>
+<span class="cm"># V_ref = 0.600V,  target V_out = 5.0V</span>
+
+<span class="cm"># Rearranging:</span>
+<span class="cm"># R10/R11 = (V_out / V_ref) - 1</span>
+<span class="cm">#         = (5.0 / 0.6) - 1</span>
+<span class="cm">#         = 7.333</span>
+
+<span class="cm"># Choose R11 = 100 kΩ (standard value)</span>
+<span class="cm"># R10 = 7.333 × 100 kΩ = 733.3 kΩ → use 732 kΩ (nearest E96)</span>
+
+R11 = <span class="num">100</span> kΩ
+R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (1 + 732/100) = 4.992V ✓</span></code></pre>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">TPS61022 — Boost Converter</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">V_in range</span><span class="info-val">0.5V – 5.5V</span></div>
+          <div class="info-row"><span class="info-key">V_out</span><span class="info-val">5.0V (set by divider)</span></div>
+          <div class="info-row"><span class="info-key">V_ref</span><span class="info-val">0.600V</span></div>
+          <div class="info-row"><span class="info-key">R10 / R11</span><span class="info-val">732 kΩ / 100 kΩ</span></div>
+          <div class="info-row"><span class="info-key">I_out max</span><span class="info-val">4A</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">MCP73831 — LiPo Charger</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Topology</span><span class="info-val">Linear, single-cell</span></div>
+          <div class="info-row"><span class="info-key">V_charge</span><span class="info-val">4.20V</span></div>
+          <div class="info-row"><span class="info-key">I_charge</span><span class="info-val">Set by R_prog</span></div>
+          <div class="info-row"><span class="info-key">Input</span><span class="info-val">USB VBUS (5V)</span></div>
+          <div class="info-row"><span class="info-key">Package</span><span class="info-val">SOT-23-5</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S3 ·</span> Battery Protection — DW01A + FS8205A</p>
+    <div class="prose">
+      <p>
+        The <strong>DW01A</strong> is a LiPo protection IC that monitors cell voltage and current,
+        cutting off the <strong>FS8205A dual MOSFET</strong> on overcurrent, overdischarge, or overcharge.
+        The key wiring detail: the negative battery terminal (<code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">-BATT</code>)
+        must be kept as a <strong>separate net from GND</strong> through the protection circuit.
+        Merging them prematurely bypasses the protection entirely.
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="label">Common mistake</span>
+      Connecting <strong>-BATT directly to GND</strong> on the schematic is a silent error — DRC won't catch it,
+      the board will appear to work, but the overcurrent and overdischarge protection is completely
+      bypassed. The FS8205A must sit in series with the negative battery path.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S4 ·</span> PCB Layout — Trace Widths & USB Routing</p>
+    <div class="prose">
+      <p>
+        Trace widths were calculated using the IPC-2221 standard for a 1 oz copper, 10°C temperature rise target.
+        The USB D+/D− differential pair was routed on the same copper layer with matched lengths to avoid
+        signal skew — critical for reliable USB 2.0 full-speed communication.
+      </p>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">Trace Width Spec</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">VBUS (500mA)</span><span class="info-val">1.5 mm</span></div>
+          <div class="info-row"><span class="info-key">BATT± (1A)</span><span class="info-val">1.0 mm</span></div>
+          <div class="info-row"><span class="info-key">+5V trunk</span><span class="info-val">1.0 mm</span></div>
+          <div class="info-row"><span class="info-key">Signals</span><span class="info-val">0.2 mm</span></div>
+          <div class="info-row"><span class="info-key">USB D+/D−</span><span class="info-val">0.2 mm, matched</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">USB-C Implementation</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">CC1 / CC2</span><span class="info-val">5.1 kΩ to GND</span></div>
+          <div class="info-row"><span class="info-key">Purpose</span><span class="info-val">Identify as UFP device</span></div>
+          <div class="info-row"><span class="info-key">VBUS decoupling</span><span class="info-val">10µF + 100nF</span></div>
+          <div class="info-row"><span class="info-key">FT232RL TEST</span><span class="info-val">Tied to GND</span></div>
+          <div class="info-row"><span class="info-key">FT232RL RESET</span><span class="info-val">Voltage divider</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">Layout priority</span>
+      The TPS61022 boost converter and its inductor were placed first, co-located with the shortest
+      possible SW node trace. High-frequency switching nodes radiate EMI proportional to loop area —
+      minimising the distance between the IC switch pin, inductor, and output cap was the
+      highest-priority placement constraint on the board.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S5 ·</span> Full Stack</p>
+    <div class="tags">
+      <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">FT232RL</span>
+      <span class="tag">TPS61022 Boost</span><span class="tag">MCP73831</span><span class="tag">DW01A</span>
+      <span class="tag">FS8205A</span><span class="tag">AMS1117-3.3</span><span class="tag">USB-C</span>
+      <span class="tag">2-Layer Layout</span><span class="tag">IPC-2221</span><span class="tag">JLCPCB</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 <span class="copper">Ethan Xiong</span> · Electrical Engineering · UWaterloo</p>
+  <p>Rev 1.0</p>
+</footer>
+</body>
+</html>
