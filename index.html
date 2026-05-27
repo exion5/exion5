@@ -5,366 +5,538 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ethan — Hardware Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Lora:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #F7F5F0;
-    --bg2: #EDEAE3;
-    --fg: #1A1916;
-    --fg2: #5A5750;
-    --fg3: #9A9690;
-    --accent: #2B4FD4;
-    --accent-light: #E8EDFC;
-    --border: rgba(26,25,22,0.10);
-    --border-strong: rgba(26,25,22,0.20);
-    --card: #FFFFFF;
-    --mono: 'DM Mono', monospace;
-    --serif: 'Lora', serif;
-    --sans: 'DM Sans', sans-serif;
-  }
+:root {
+  /* FR4 board colours */
+  --fr4-dark:    #1A2B1E;   /* deep soldermask green */
+  --fr4-mid:     #1E3323;   /* mid green */
+  --fr4-light:   #243D29;   /* lighter board surface */
+  --fr4-surface: #2A4430;   /* component area */
 
-  html { scroll-behavior: smooth; }
+  /* Copper / trace colours */
+  --copper:      #C8821A;   /* exposed copper */
+  --copper-dim:  #8A5510;
+  --copper-bg:   #2A1E0A;
+  --gold:        #E8A830;   /* ENIG gold finish */
+  --gold-dim:    #A06A10;
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--fg);
-    font-size: 16px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
+  /* Silkscreen */
+  --silk:        #EEF2EC;   /* silkscreen white */
+  --silk-dim:    #A8B8A4;   /* secondary silkscreen */
+  --silk-faint:  #607060;   /* faint silkscreen */
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 0 2rem;
-    height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(247,245,240,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 0.5px solid var(--border);
-  }
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .nav-links {
-    display: flex; gap: 2rem; list-style: none;
-  }
-  .nav-links a {
-    font-size: 13px;
-    color: var(--fg2);
-    text-decoration: none;
-    letter-spacing: 0.02em;
-    transition: color 0.15s;
-  }
-  .nav-links a:hover { color: var(--fg); }
+  /* Solder */
+  --solder:      #C8C8B8;   /* solder joint silver */
 
-  /* SECTIONS */
-  section { padding: 6rem 2rem; max-width: 860px; margin: 0 auto; }
+  /* Borders */
+  --border:      rgba(200,130,26,0.15);
+  --border2:     rgba(200,130,26,0.30);
+  --border3:     rgba(200,130,26,0.50);
 
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 8rem;
-    padding-bottom: 4rem;
-  }
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards 0.1s;
-  }
-  .hero-name {
-    font-family: var(--serif);
-    font-size: clamp(3rem, 8vw, 5.5rem);
-    font-weight: 400;
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    color: var(--fg);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards 0.2s;
-  }
-  .hero-name em {
-    font-style: italic;
-    color: var(--fg2);
-  }
-  .hero-sub {
-    font-size: 18px;
-    color: var(--fg2);
-    max-width: 540px;
-    font-weight: 300;
-    line-height: 1.6;
-    margin-bottom: 3rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards 0.35s;
-  }
-  .hero-links {
-    display: flex; gap: 1rem; flex-wrap: wrap;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards 0.5s;
-  }
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.15s;
-    letter-spacing: 0.01em;
-  }
-  .btn-primary {
-    background: var(--fg);
-    color: var(--bg);
-  }
-  .btn-primary:hover { background: #333; }
-  .btn-secondary {
-    background: transparent;
-    color: var(--fg);
-    border: 0.5px solid var(--border-strong);
-  }
-  .btn-secondary:hover { background: var(--bg2); }
+  --mono:   'IBM Plex Mono', monospace;
+  --sans:   'IBM Plex Sans', sans-serif;
+  --serif:  'IBM Plex Serif', serif;
+}
 
-  /* SCROLL INDICATOR */
-  .scroll-hint {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--fg3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards 0.8s;
-  }
-  .scroll-line {
-    width: 32px; height: 1px; background: var(--fg3);
-  }
+html { scroll-behavior: smooth; }
 
-  /* DIVIDER */
-  .divider {
-    height: 0.5px;
-    background: var(--border);
-    max-width: 860px;
-    margin: 0 auto;
-  }
+body {
+  font-family: var(--sans);
+  background: var(--fr4-dark);
+  color: var(--silk);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-  /* SECTION HEADER */
-  .section-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg3);
-    margin-bottom: 3rem;
-  }
+/* PCB trace grid — subtle etched look */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200,130,26,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,130,26,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  /* ABOUT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-  .about-text {
-    font-size: 17px;
-    line-height: 1.75;
-    color: var(--fg2);
-    font-weight: 300;
-  }
-  .about-text strong { color: var(--fg); font-weight: 500; }
-  .about-facts { display: flex; flex-direction: column; gap: 1.5rem; }
-  .fact {
-    padding-bottom: 1.5rem;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .fact:last-child { border-bottom: none; padding-bottom: 0; }
-  .fact-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg3);
-    margin-bottom: 4px;
-  }
-  .fact-value {
-    font-size: 14px;
-    color: var(--fg);
-  }
+/* Via dots at intersections */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(200,130,26,0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  /* PROJECTS */
-  .projects-list { display: flex; flex-direction: column; gap: 0; }
-  .project {
-    padding: 2.5rem 0;
-    border-bottom: 0.5px solid var(--border);
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 3rem;
-    align-items: start;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .project.visible { opacity: 1; transform: translateY(0); }
-  .project:first-child { border-top: 0.5px solid var(--border); }
-  .project-meta {}
-  .project-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--fg3);
-    margin-bottom: 8px;
-  }
-  .project-title {
-    font-family: var(--serif);
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-  .project-award {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-light);
-    padding: 3px 8px;
-    border-radius: 4px;
-  }
-  .project-body {}
-  .project-desc {
-    font-size: 15px;
-    color: var(--fg2);
-    font-weight: 300;
-    margin-bottom: 1.25rem;
-    line-height: 1.7;
-  }
-  .tags {
-    display: flex; flex-wrap: wrap; gap: 6px;
-  }
-  .tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 4px;
-    background: var(--bg2);
-    color: var(--fg2);
-    border: 0.5px solid var(--border);
-  }
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 2.5rem;
+  height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(26,43,30,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* PCB corner mark on logo */
+.nav-logo::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--copper);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silk-dim);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--gold); }
 
-  /* SKILLS */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 0.5px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .skill-group {
-    background: var(--bg);
-    padding: 1.5rem;
-  }
-  .skill-group-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg3);
-    margin-bottom: 1rem;
-  }
-  .skill-items {
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .skill-item {
-    font-size: 14px;
-    color: var(--fg2);
-  }
+/* LAYOUT */
+.container { max-width: 920px; margin: 0 auto; padding: 0 2.5rem; position: relative; z-index: 1; }
+section { padding: 6rem 0; }
 
-  /* CONTACT */
-  #contact {
-    padding-bottom: 8rem;
-  }
-  .contact-heading {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-  }
-  .contact-heading em { font-style: italic; color: var(--fg2); }
-  .contact-sub {
-    font-size: 16px;
-    color: var(--fg2);
-    font-weight: 300;
-    max-width: 420px;
-    margin-bottom: 2.5rem;
-  }
-  .contact-links {
-    display: flex; gap: 1rem; flex-wrap: wrap;
-  }
+/* SECTION LABEL — looks like silkscreen ref designator */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 3.5rem;
+}
+.section-label::before {
+  content: attr(data-ref);
+  font-size: 9px;
+  color: var(--silk-faint);
+  letter-spacing: 0.1em;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--border2), transparent);
+}
 
-  /* FOOTER */
-  footer {
-    border-top: 0.5px solid var(--border);
-    padding: 2rem;
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  footer p {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--fg3);
-  }
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 54px;
+  position: relative;
+}
 
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+/* Board edge markers — top corners */
+#hero::before, #hero::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  border-color: var(--copper-dim);
+  border-style: solid;
+  opacity: 0.5;
+}
+#hero::before { top: 80px; left: 0; border-width: 1.5px 0 0 1.5px; }
+#hero::after  { top: 80px; right: 0; border-width: 1.5px 1.5px 0 0; }
 
-  /* RESPONSIVE */
-  @media (max-width: 640px) {
-    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .project { grid-template-columns: 1fr; gap: 1rem; }
-    nav { padding: 0 1rem; }
-    .nav-links { gap: 1.25rem; }
-    section { padding: 4rem 1.25rem; }
-    footer { flex-direction: column; gap: 1rem; text-align: center; }
-  }
+.hero-refdes {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--silk-faint);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.1s;
+}
+.hero-name {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--silk);
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.2s;
+}
+.hero-title {
+  font-family: var(--mono);
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.3s;
+}
+.hero-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--silk-dim);
+  max-width: 500px;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.4s;
+}
+.hero-links {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.55s;
+}
+
+/* Copper trace decoration beside hero text */
+.hero-trace {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.15s;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: var(--copper);
+  color: var(--fr4-dark);
+}
+.btn-primary:hover { background: var(--gold); }
+.btn-ghost {
+  background: transparent;
+  color: var(--silk-dim);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover { color: var(--gold); border-color: var(--border3); }
+
+/* ABOUT */
+.about-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 4rem;
+  align-items: start;
+}
+.about-text {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--silk-dim);
+  line-height: 1.85;
+}
+.about-text p { margin-bottom: 1.25rem; }
+.about-text p:last-child { margin-bottom: 0; }
+.about-text strong { color: var(--silk); font-weight: 500; }
+.about-text .copper { color: var(--copper); }
+
+/* Component-style info box */
+.component-card {
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: var(--fr4-mid);
+  overflow: hidden;
+}
+.component-card-header {
+  background: var(--fr4-light);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.component-ref {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--copper);
+}
+.component-value {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--silk-faint);
+}
+.component-rows { display: flex; flex-direction: column; }
+.comp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.comp-row:last-child { border-bottom: none; }
+.comp-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--silk-faint);
+  flex-shrink: 0;
+}
+.comp-val {
+  font-size: 12px;
+  color: var(--silk);
+  text-align: right;
+}
+.comp-val .gold { color: var(--gold); }
+
+/* PROJECTS */
+.project {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--fr4-mid);
+  overflow: hidden;
+  margin-bottom: 2px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s;
+}
+.project:hover { border-color: var(--border2); }
+.project.visible { opacity: 1; transform: translateY(0); }
+
+/* Silkscreen-style header bar */
+.project-header {
+  background: var(--fr4-light);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.project-refdes {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--copper);
+}
+.project-award {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  background: var(--copper-bg);
+  padding: 3px 10px;
+  border-radius: 1px;
+}
+
+.project-body { padding: 1.75rem; }
+.project-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--silk);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.project-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--silk-dim);
+  line-height: 1.85;
+  margin-bottom: 1.5rem;
+}
+.project-desc code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--fr4-surface);
+  border: 1px solid var(--border2);
+  color: var(--gold);
+  padding: 1px 5px;
+  border-radius: 1px;
+}
+
+/* Tags styled like component markings */
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 1px;
+  background: var(--fr4-surface);
+  color: var(--silk-dim);
+  border: 1px solid var(--border);
+}
+
+/* SKILLS */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.skill-group {
+  background: var(--fr4-mid);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1.5rem;
+  transition: border-color 0.15s;
+}
+.skill-group:hover { border-color: var(--border2); }
+.skill-group-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 1.25rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.skill-items { display: flex; flex-direction: column; gap: 8px; }
+.skill-item {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--silk-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Via marker before each skill */
+.skill-item::before {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--copper-dim);
+  flex-shrink: 0;
+}
+
+/* CONTACT */
+.contact-wrap {
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: var(--fr4-mid);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Board corner marks */
+.contact-wrap::before, .contact-wrap::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  border-color: var(--copper-dim);
+  border-style: solid;
+  opacity: 0.6;
+}
+.contact-wrap::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+.contact-wrap::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+.contact-heading {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  color: var(--silk);
+}
+.contact-heading .copper { color: var(--copper); font-style: normal; }
+.contact-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--silk-dim);
+  max-width: 400px;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+.contact-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; z-index: 1;
+}
+footer p {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--silk-faint);
+  letter-spacing: 0.04em;
+}
+footer .copper { color: var(--copper); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  nav { padding: 0 1.25rem; }
+  .container { padding: 0 1.25rem; }
+  footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  .contact-wrap { padding: 2rem 1.5rem; }
+  .project-body { padding: 1.25rem; }
+  .project-header { padding: 10px 1.25rem; }
+}
+@media (max-width: 480px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="#hero">ethan ↗</a>
+  <a class="nav-logo" href="#hero">ETHAN</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -374,216 +546,258 @@
 </nav>
 
 <!-- HERO -->
-<section id="hero" style="position: relative;">
-  <p class="hero-tag">Hardware Engineer · 1A Electrical Engineering</p>
-  <h1 class="hero-name">Ethan.<br><em>I build hardware.</em></h1>
-  <p class="hero-sub">
-    From schematic to layout to firmware — I design embedded systems,
-    custom PCBs, and the software that runs on them.
-    Currently studying Electrical Engineering at the University of Waterloo.
-  </p>
-  <div class="hero-links">
-    <a href="#projects" class="btn btn-primary">View projects</a>
-    <a href="https://github.com/exion5" target="_blank" class="btn btn-secondary">GitHub ↗</a>
-    <a href="#contact" class="btn btn-secondary">Get in touch</a>
-  </div>
-  <div class="scroll-hint">
-    <span class="scroll-line"></span>
-    Scroll
-  </div>
-</section>
+<div class="container">
+  <section id="hero">
+    <p class="hero-refdes">Aspiring Hardware Engineer/p>
+    <h1 class="hero-name">Ethan Xiong</h1>
+    <p class="hero-title">Electrical Engineering · University of Waterloo</p>
+    <p class="hero-sub">
+      I design embedded systems, lay out PCBs, and write the firmware that runs on them.
+      I've worked through the whole design process from creating circuit schematics, to debugging RF signals, to designing final 3D enclosures.
+    </p>
+    <div class="hero-links">
+      <a href="#projects" class="btn btn-primary">View projects</a>
+      <a href="https://github.com/exion5" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
 
-<div class="divider"></div>
+    <!-- Decorative copper trace SVG -->
+    <svg class="hero-trace" viewBox="0 0 220 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M180 10 L180 60 Q180 80 160 80 L40 80 Q20 80 20 100 L20 180 Q20 200 40 200 L120 200 Q140 200 140 220 L140 280" stroke="#C8821A" stroke-width="2" fill="none"/>
+      <circle cx="180" cy="10" r="5" fill="none" stroke="#C8821A" stroke-width="1.5"/>
+      <circle cx="20" cy="180" r="8" fill="none" stroke="#C8821A" stroke-width="1.5"/>
+      <circle cx="20" cy="180" r="3" fill="#C8821A"/>
+      <circle cx="140" cy="280" r="8" fill="none" stroke="#C8821A" stroke-width="1.5"/>
+      <circle cx="140" cy="280" r="3" fill="#C8821A"/>
+      <path d="M60 80 L60 140 Q60 155 75 155 L160 155" stroke="#C8821A" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+      <circle cx="60" cy="80" r="4" fill="#C8821A" opacity="0.6"/>
+      <circle cx="160" cy="155" r="4" fill="#C8821A" opacity="0.6"/>
+      <rect x="165" y="100" width="30" height="16" rx="1" fill="none" stroke="#C8821A" stroke-width="1" opacity="0.4"/>
+      <rect x="0" y="230" width="30" height="16" rx="1" fill="none" stroke="#C8821A" stroke-width="1" opacity="0.4"/>
+      <text x="168" y="112" font-family="monospace" font-size="7" fill="#C8821A" opacity="0.5">R12</text>
+      <text x="3" y="242" font-family="monospace" font-size="7" fill="#C8821A" opacity="0.5">C4</text>
+    </svg>
+  </section>
+</div>
 
 <!-- ABOUT -->
-<section id="about">
-  <p class="section-label">About</p>
-  <div class="about-grid">
-    <div class="about-text">
-      <p style="margin-bottom: 1.25rem;">
-        My interest in hardware started with <strong>VEX V5 robotics</strong> — building competition robots from scratch taught me how mechanical design, electronics, and firmware all have to work together.
-      </p>
-      <p style="margin-bottom: 1.25rem;">
-        Since then I've built a <strong>hand-wired mechanical keyboard</strong>, a <strong>Raspberry Pi handheld gaming console</strong>, and increasingly complex electronics projects culminating in a full custom PCB designed end-to-end in KiCad.
-      </p>
-      <p>
-        I'm targeting hardware and embedded roles where I can keep working at the intersection of EE, firmware, and physical systems.
-      </p>
+<div class="container">
+  <section id="about">
+    <p class="section-label" data-ref="U2">About</p>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          My interest in hardware started as a kid when I broke my Nintendo Switch. After getting it repaired by an Electrical Engineer,
+          I became fascinated by how such a small device could hold so many systems that work together. 
+          It sparked my curiosity about how electronic devices are designed at each level. It pushed me to start learning more about 
+          circuits and acted as my first stepping stone in becoming an Electrical Engineer.
+        </p>
+        <p>
+          Since then I've hand-wired a <strong>mechanical keyboard</strong>, built a
+          <strong>Raspberry Pi handheld console</strong>, and created an
+          <span class="copper">IEEE Technical Design award-winning</span> environmental monitoring system integrating
+          mmWave radar, particulate sensors, and a live web dashboard on a Pi Zero 2W.
+        </p>
+        <p>
+          Most recently I took a full custom PCB from concept to fabrication for my RC Drone Project, where I designed an
+          Arduino Nano equivalent with integrated boost converter, LiPo charger, USB bridge,
+          and battery protection in KiCad, fabricated at JLCPCB.
+        </p>
+      </div>
+      <div class="component-card">
+        <div class="component-card-header">
+          <span class="component-ref">U1 — ETHAN</span>
+          <span class="component-value">1A EE · Waterloo</span>
+        </div>
+        <div class="component-rows">
+          <div class="comp-row">
+            <span class="comp-key">Program</span>
+            <span class="comp-val">Electrical Engineering</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-key">Focus</span>
+            <span class="comp-val">Embedded · PCB · Firmware</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-key">EDA</span>
+            <span class="comp-val">KiCad · JLCPCB</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-key">Protocols</span>
+            <span class="comp-val">I²C · SPI · UART</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-key">Award</span>
+            <span class="comp-val"><span class="gold">IEEE Technical Award</span></span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-key">Status</span>
+            <span class="comp-val"><span class="gold">Open to co-op 2026/27</span></span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="about-facts">
-      <div class="fact">
-        <p class="fact-label">Program</p>
-        <p class="fact-value">Electrical Engineering, University of Waterloo</p>
-      </div>
-      <div class="fact">
-        <p class="fact-label">Focus</p>
-        <p class="fact-value">Embedded systems, PCB design, firmware</p>
-      </div>
-      <div class="fact">
-        <p class="fact-label">Tools</p>
-        <p class="fact-value">KiCad · Arduino / AVR · Raspberry Pi · C/C++ · Python</p>
-      </div>
-      <div class="fact">
-        <p class="fact-label">Recognition</p>
-        <p class="fact-value">IEEE Technical Award — SCOPE Monitor</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
+  </section>
+</div>
 
 <!-- PROJECTS -->
-<section id="projects">
-  <p class="section-label">Projects</p>
-  <div class="projects-list">
+<div class="container">
+  <section id="projects">
+    <p class="section-label" data-ref="U3">Projects</p>
 
     <div class="project">
-      <div class="project-meta">
-        <p class="project-num">01</p>
-        <h3 class="project-title">SCOPE Monitor</h3>
-        <br>
+      <div class="project-header">
+        <span class="project-refdes">J1 · SCOPE Monitor</span>
         <span class="project-award">★ IEEE Technical Award</span>
       </div>
       <div class="project-body">
+        <h3 class="project-title">Environmental & Security Monitoring System</h3>
         <p class="project-desc">
-          An environmental and security monitoring system built on a Raspberry Pi Zero 2W with a live Flask web dashboard.
-          Integrates a 24 GHz mmWave radar for presence detection alongside particulate and air quality sensors.
-          Key engineering challenges included writing a custom binary frame parser for the radar's UART protocol and
-          implementing bit-banged software UART at 256 kbaud via <code style="font-size:13px; font-family: var(--mono); background: var(--bg2); padding: 1px 5px; border-radius: 3px;">pigpio</code> — hardware UART was already occupied.
+          A Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 24 GHz mmWave
+          radar for presence detection alongside particulate and air quality sensors. The toughest part was
+          the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
+          over a bit-banged software UART running at 256 kbaud via <code>pigpio</code> — hardware
+          UART was occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
         </p>
         <div class="tags">
-          <span class="tag">Raspberry Pi</span>
+          <span class="tag">RPi Zero 2W</span>
+          <span class="tag">HLK-LD2450 Radar</span>
+          <span class="tag">PMS5003</span>
+          <span class="tag">ADS1115 ADC</span>
+          <span class="tag">I²C</span>
+          <span class="tag">Software UART</span>
           <span class="tag">Flask</span>
-          <span class="tag">UART / I²C</span>
-          <span class="tag">mmWave Radar</span>
-          <span class="tag">Python</span>
+          <span class="tag">pigpio</span>
           <span class="tag">systemd</span>
-          <span class="tag">ADS1115</span>
         </div>
       </div>
     </div>
 
     <div class="project">
-      <div class="project-meta">
-        <p class="project-num">02</p>
-        <h3 class="project-title">Custom RC Transmitter</h3>
+      <div class="project-header">
+        <span class="project-refdes">J2 · RC Transmitter</span>
       </div>
       <div class="project-body">
+        <h3 class="project-title">Handheld 2.4 GHz Radio Transmitter</h3>
         <p class="project-desc">
-          A handheld 2.4 GHz radio transmitter built from scratch targeting a custom drone receiver.
-          Designed around an Arduino Nano with an NRF24L01+LNA transceiver, MPU-6050 IMU for orientation,
-          dual analog joysticks, rotary encoder, and a PCF8574-driven I²C LCD.
-          Power delivery uses an AMS1117-3.3V LDO and a BSS138-based logic-level shifter to safely interface
-          the 5V Arduino with 3.3V peripherals.
+          A handheld RC transmitter built from scratch targeting a custom drone receiver. Arduino Nano
+          at the core, NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
+          rotary encoder, and a PCF8574-driven I²C LCD display. Power delivery required a BSS138-based
+          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals, with an
+          AMS1117-3.3V LDO for regulation.
         </p>
         <div class="tags">
           <span class="tag">Arduino Nano</span>
           <span class="tag">NRF24L01+LNA</span>
           <span class="tag">MPU-6050</span>
-          <span class="tag">I²C</span>
-          <span class="tag">SPI</span>
-          <span class="tag">Power Design</span>
+          <span class="tag">PCF8574</span>
+          <span class="tag">BSS138 Shifter</span>
+          <span class="tag">AMS1117-3.3</span>
+          <span class="tag">SPI / I²C</span>
           <span class="tag">Perfboard</span>
         </div>
       </div>
     </div>
 
     <div class="project">
-      <div class="project-meta">
-        <p class="project-num">03</p>
-        <h3 class="project-title">Custom Arduino PCB</h3>
+      <div class="project-header">
+        <span class="project-refdes">J3 · Custom Arduino PCB</span>
       </div>
       <div class="project-body">
+        <h3 class="project-title">ATmega328P Board — KiCad to JLCPCB</h3>
         <p class="project-desc">
           A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB.
-          Integrates an ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
-          protection, TPS61022 boost converter (5V output with calculated feedback divider), and AMS1117-3.3 LDO — all on a
-          2-layer board with properly sized power traces, decoupling caps, and equal-length USB D+/D- routing.
+          ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
+          protection, and a TPS61022 boost converter for 5V output — feedback resistors calculated
+          from the 0.6V reference: R10 = 733 kΩ, R11 = 100 kΩ. 2-layer layout with 1.5 mm VBUS
+          traces, 1 mm power rails, 0.2 mm signal traces, and equal-length USB D+/D− routing.
         </p>
         <div class="tags">
           <span class="tag">KiCad</span>
           <span class="tag">ATmega328P</span>
           <span class="tag">FT232RL</span>
-          <span class="tag">TPS61022</span>
-          <span class="tag">LiPo Charging</span>
-          <span class="tag">PCB Layout</span>
+          <span class="tag">TPS61022 Boost</span>
+          <span class="tag">MCP73831</span>
+          <span class="tag">DW01A / FS8205A</span>
+          <span class="tag">2-Layer Layout</span>
           <span class="tag">JLCPCB</span>
         </div>
       </div>
     </div>
 
-  </div>
-</section>
-
-<div class="divider"></div>
+  </section>
+</div>
 
 <!-- SKILLS -->
-<section id="skills">
-  <p class="section-label">Skills</p>
-  <div class="skills-grid">
-    <div class="skill-group">
-      <p class="skill-group-label">PCB Design</p>
-      <div class="skill-items">
-        <span class="skill-item">KiCad</span>
-        <span class="skill-item">2-layer layout</span>
-        <span class="skill-item">DRC / ERC</span>
-        <span class="skill-item">JLCPCB workflow</span>
-        <span class="skill-item">Component sourcing</span>
+<div class="container">
+  <section id="skills">
+    <p class="section-label" data-ref="U4">Skills</p>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <p class="skill-group-label">PCB Design</p>
+        <div class="skill-items">
+          <span class="skill-item">KiCad</span>
+          <span class="skill-item">2-layer layout</span>
+          <span class="skill-item">DRC / ERC</span>
+          <span class="skill-item">JLCPCB workflow</span>
+          <span class="skill-item">Component sourcing</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-label">Embedded</p>
+        <div class="skill-items">
+          <span class="skill-item">ATmega328P / AVR</span>
+          <span class="skill-item">Raspberry Pi</span>
+          <span class="skill-item">Arduino framework</span>
+          <span class="skill-item">I²C · SPI · UART</span>
+          <span class="skill-item">QMK firmware</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-label">Power</p>
+        <div class="skill-items">
+          <span class="skill-item">Boost converters</span>
+          <span class="skill-item">LDO regulators</span>
+          <span class="skill-item">LiPo charging ICs</span>
+          <span class="skill-item">Battery protection</span>
+          <span class="skill-item">Level shifting</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group-label">Software</p>
+        <div class="skill-items">
+          <span class="skill-item">C / C++</span>
+          <span class="skill-item">Python</span>
+          <span class="skill-item">Flask</span>
+          <span class="skill-item">Linux / systemd</span>
+          <span class="skill-item">Git</span>
+        </div>
       </div>
     </div>
-    <div class="skill-group">
-      <p class="skill-group-label">Embedded Systems</p>
-      <div class="skill-items">
-        <span class="skill-item">ATmega328P / AVR</span>
-        <span class="skill-item">Raspberry Pi</span>
-        <span class="skill-item">Arduino framework</span>
-        <span class="skill-item">I²C, SPI, UART</span>
-        <span class="skill-item">QMK firmware</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <p class="skill-group-label">Power Electronics</p>
-      <div class="skill-items">
-        <span class="skill-item">Boost converters</span>
-        <span class="skill-item">LDO regulators</span>
-        <span class="skill-item">LiPo charging ICs</span>
-        <span class="skill-item">Battery protection</span>
-        <span class="skill-item">Logic level shifting</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <p class="skill-group-label">Software</p>
-      <div class="skill-items">
-        <span class="skill-item">C / C++</span>
-        <span class="skill-item">Python</span>
-        <span class="skill-item">Flask</span>
-        <span class="skill-item">Linux / systemd</span>
-        <span class="skill-item">Git</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
+  </section>
+</div>
 
 <!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">Contact</p>
-  <h2 class="contact-heading">Let's work<br><em>together.</em></h2>
-  <p class="contact-sub">
-    Open to hardware engineering internships and co-op roles for 2025–2026.
-    Feel free to reach out.
-  </p>
-  <div class="contact-links">
-    <a href="mailto:your.email@example.com" class="btn btn-primary">Email me</a>
-    <a href="https://linkedin.com/in/your-link-here" target="_blank" class="btn btn-secondary">LinkedIn ↗</a>
-    <a href="https://github.com/exion5" target="_blank" class="btn btn-secondary">GitHub ↗</a>
-  </div>
-</section>
+<div class="container">
+  <section id="contact">
+    <p class="section-label" data-ref="U5">Contact</p>
+    <div class="contact-wrap">
+      <h2 class="contact-heading">Let's build<br><span class="copper">something real.</span></h2>
+      <p class="contact-sub">
+        Open to hardware engineering internships and co-op roles for 2026–2027.
+        Reach out if you're working on something interesting.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:ethanjeffxiong2008@gmail.com" class="btn btn-primary">Email me</a>
+        <a href="https://www.linkedin.com/in/ethan-xiong-33b778344/" target="_blank" class="btn btn-ghost">LinkedIn ↗</a>
+        <a href="https://github.com/exion5" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+</div>
 
 <footer>
-  <p>Ethan · Electrical Engineering @ University of Waterloo</p>
+  <p>© 2025 <span class="copper">Ethan Xiong</span> · Electrical Engineering · University of Waterloo</p>
   <p>Built with HTML/CSS</p>
 </footer>
 
@@ -592,8 +806,7 @@
     entries.forEach(e => {
       if (e.isIntersecting) e.target.classList.add('visible');
     });
-  }, { threshold: 0.1 });
-
+  }, { threshold: 0.08 });
   document.querySelectorAll('.project').forEach(el => observer.observe(el));
 </script>
 
