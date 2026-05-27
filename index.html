@@ -692,7 +692,7 @@ a.project:hover .read-more { color: var(--gold); }
   <section id="projects">
     <p class="section-label" data-ref="U3">Projects</p>
 
-    <div class="project">
+    <a class="project" href="projects/scope-monitor.html">
       <div class="project-header">
         <span class="project-refdes">J1 · SCOPE Monitor</span>
         <span class="project-award">★ IEEE Technical Award</span>
@@ -706,19 +706,15 @@ a.project:hover .read-more { color: var(--gold); }
           over a bit-banged software UART running at 256 kbaud via <code>pigpio</code> — hardware
           UART was occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
         </p>
-        <div class="tags">
-          <span class="tag">RPi Zero 2W</span>
-          <span class="tag">HLK-LD2450 Radar</span>
-          <span class="tag">PMS5003</span>
-          <span class="tag">ADS1115 ADC</span>
-          <span class="tag">I²C</span>
-          <span class="tag">Software UART</span>
-          <span class="tag">Flask</span>
-          <span class="tag">pigpio</span>
-          <span class="tag">systemd</span>
+        <div class="project-hover-hint">
+          <span class="tags"><span class="tag">RPi Zero 2W</span><span class="tag">HLK-LD2450 Radar</span><span class="tag">PMS5003</span><span class="tag">ADS1115 ADC</span><span class="tag">I²C</span><span class="tag">Software UART</span><span class="tag">Flask</span><span class="tag">pigpio</span><span class="tag">systemd</span></span>
+        </div>
+        <div class="project-expand">
+          <p>Custom binary frame parser for <strong>AA FF 03 00</strong> radar protocol · Bit-banged UART at 256 kbaud via pigpio · Dual-UART conflict resolution · systemd service with auto-restart · Live radar target visualization on Flask dashboard</p>
+          <span class="read-more">Read full deep-dive →</span>
         </div>
       </div>
-    </div>
+    </a>
 
     <a class="project" href="projects/rc-transmitter.html">
       <div class="project-header">
