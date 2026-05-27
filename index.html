@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ethan Xiong | Electrical Engineer</title>
+<title>Ethan — Hardware Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
 <style>
@@ -543,25 +543,29 @@ a.project .project-title { transition: color 0.2s; }
 a.project:hover .project-title { color: var(--gold); }
 
 /* HOVER EXPAND */
+/* Tags always visible */
 .project-hover-hint { margin-top: 1rem; }
+
+/* Expand panel hidden by default */
 .project-expand {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
   opacity: 0;
   margin-top: 0;
+  padding-top: 0;
   font-size: 13px;
   font-weight: 300;
   color: var(--silk-dim);
   line-height: 1.8;
-  border-top: 0px solid var(--border);
+  border-top: 0px solid transparent;
+  transition: max-height 0.4s ease, opacity 0.35s ease, padding-top 0.3s ease, border-color 0.3s ease;
 }
 a.project:hover .project-expand {
-  max-height: 200px;
+  max-height: 220px;
   opacity: 1;
-  margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+  border-top: 1px solid var(--border2);
 }
 .project-expand strong { color: var(--silk); font-weight: 500; }
 .read-more {
@@ -571,6 +575,7 @@ a.project:hover .project-expand {
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--copper);
+  transition: color 0.15s;
 }
 a.project:hover .read-more { color: var(--gold); }
 
