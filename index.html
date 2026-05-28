@@ -703,11 +703,11 @@ a.project:hover .read-more { color: var(--gold); }
       <div class="project-body">
         <h3 class="project-title">SCOPE · Environmental & Security Monitoring System</h3>
         <p class="project-desc">
-          A Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 24 GHz mmWave
-          radar for presence detection alongside particulate and air quality sensors. The toughest part was
+          SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
+          radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
           the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
-          over a bit-banged software UART running at 256 kbaud via <code>pigpio</code> — hardware
-          UART was occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
+          over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
+          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">RPi Zero 2W</span><span class="tag">HLK-LD2450 Radar</span><span class="tag">PMS5003</span><span class="tag">ADS1115 ADC</span><span class="tag">I²C</span><span class="tag">Software UART</span><span class="tag">Flask</span><span class="tag">pigpio</span><span class="tag">systemd</span></span>
@@ -724,13 +724,12 @@ a.project:hover .read-more { color: var(--gold); }
         <span class="project-refdes">RC Transmitter</span>
       </div>
       <div class="project-body">
-        <h3 class="project-title">Handheld 2.4 GHz Radio Transmitter</h3>
+        <h3 class="project-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
         <p class="project-desc">
-          A handheld RC transmitter built from scratch targeting a custom drone receiver. Arduino Nano
-          at the core, NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
-          rotary encoder, and a PCF8574-driven I²C LCD display. Power delivery required a BSS138-based
-          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals, with an
-          AMS1117-3.3V LDO for regulation.
+          This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
+          It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
+          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
+          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span><span class="tag">PCF8574</span><span class="tag">BSS138 Shifter</span><span class="tag">AMS1117-3.3</span><span class="tag">SPI / I²C</span><span class="tag">Perfboard</span></span>
@@ -749,11 +748,12 @@ a.project:hover .read-more { color: var(--gold); }
       <div class="project-body">
         <h3 class="project-title">ATmega328P Board — KiCad to JLCPCB</h3>
         <p class="project-desc">
-          A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB.
+          A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+          Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
           ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
-          protection, and a TPS61022 boost converter for 5V output — feedback resistors calculated
-          from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 2-layer layout with 1.5 mm VBUS
-          traces, 1 mm power rails, 0.2 mm signal traces, and equal-length USB D+/D− routing.
+          protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
+          from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 4-layer layout with 0.8 mm VBUS & power
+          traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">FT232RL</span><span class="tag">TPS61022 Boost</span><span class="tag">MCP73831</span><span class="tag">DW01A / FS8205A</span><span class="tag">2-Layer Layout</span><span class="tag">JLCPCB</span></span>

@@ -104,20 +104,21 @@ footer .copper{color:var(--copper)}
 </head>
 <body>
 <nav>
-  <a class="nav-logo" href="../index.html">ETHAN</a>
+  <a class="nav-logo" href="../index.html">ETHAN XIONG</a>
   <a class="nav-back" href="../index.html">← Back to portfolio</a>
 </nav>
 
 <div class="container">
   <div class="project-hero">
-    <p class="project-refdes">2026</p>
+    <p class="project-refdes">September 2025 - March 2026</p>
     <h1 class="project-title">SCOPE Monitor</h1>
     <p class="project-subtitle">Environmental & Security Monitoring System</p>
-    <div class="award-badge">★ IEEE Technical Award</div>
+    <div class="award-badge">★ IEEE Technical Design Award</div>
     <p class="project-lede">
       A Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a
       24 GHz mmWave radar for presence detection alongside particulate, air quality, and
-      sound level sensors — all running as a hardened systemd service.
+      sound level sensors. All are running as a hardened systemd service to protect school 
+      washrooms from misconduct.
     </p>
   </div>
 
@@ -132,11 +133,11 @@ footer .copper{color:var(--copper)}
     </div>
     <div class="spec-cell">
       <p class="spec-label">RF</p>
-      <p class="spec-value">24 GHz mmWave</p>
+      <p class="spec-value">60 GHz mmWave</p>
     </div>
     <div class="spec-cell">
       <p class="spec-label">Recognition</p>
-      <p class="spec-value"><span class="copper">IEEE Award</span></p>
+      <p class="spec-value"><span class="copper">IEEE Technical Design Award</span></p>
     </div>
   </div>
 
@@ -145,9 +146,9 @@ footer .copper{color:var(--copper)}
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
     <div class="prose">
       <p>
-        SCOPE Monitor started as a question: could a single Raspberry Pi Zero 2W — a $15 computer the size of a stick of gum —
-        meaningfully monitor an entire room's environment and security in real time? The answer turned out to be yes,
-        but getting there required solving some real hardware and software constraints.
+        The SCOPE Monitor started off as a problem to tackle improving safety in school washrooms, which are unfortunately common sites for bullying and misconduct.
+         The idea was to create a monitoring system that could detect presence, track movement patterns, and monitor environmental conditions without invading privacy.
+         It leverages a Raspberry Pi Zero 2W as the central processing unit, chosen for its compact size, low power consumption, and sufficient processing capabilities to handle multiple sensor inputs and run a web server simultaneously.
       </p>
       <p>
         The system integrates four sensors: an <strong>HLK-LD2450 24 GHz mmWave radar</strong> for presence and motion detection,
@@ -164,11 +165,11 @@ footer .copper{color:var(--copper)}
     <div class="prose">
       <p>
         The Pi Zero 2W only has <strong>one hardware UART</strong> exposed on the GPIO header (<code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">/dev/serial0</code>).
-        The PMS5003 claimed it at 9600 baud. The HLK-LD2450 radar also needed UART — at
+        The PMS5003 claimed it at 9600 baud. However, the HLK-LD2450 radar also needed UART at
         <strong class="copper">256,000 baud</strong>, well above standard rates.
       </p>
       <p>
-        The solution was bit-banged software UART via <strong>pigpio</strong>, which gives cycle-accurate GPIO timing using the Pi's DMA hardware.
+        The solution was manual software UART via <strong>pigpio</strong>, which gives cycle-accurate GPIO timing using the Pi's DMA hardware.
         This let the radar run on any free GPIO pin, independently of the hardware UART, at the non-standard baud rate it required.
       </p>
     </div>
@@ -176,7 +177,7 @@ footer .copper{color:var(--copper)}
     <div class="callout">
       <span class="label">Key insight</span>
       <strong>pigpio's bit-bang UART</strong> uses DMA-driven timing rather than CPU busy-waiting, making it accurate enough for 256 kbaud
-      without hammering the CPU — critical on a low-power Zero 2W running a web server simultaneously.
+      without hammering the CPU, which is critical on a low-power Zero 2W running a web server simultaneously.
     </div>
 
     <div class="two-col">
