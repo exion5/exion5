@@ -298,6 +298,7 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
   let current = 0;
   const slides = document.querySelectorAll('.slide');
   const counter = document.getElementById('slide-counter');
+  let timer = setInterval(() => changeSlide(1), 5000);
 
   function showSlide(n) {
     slides[current].style.display = 'none';
@@ -307,7 +308,9 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
   }
 
   function changeSlide(dir) {
+    clearInterval(timer);
     showSlide(current + dir);
+    timer = setInterval(() => changeSlide(1), 5000);
   }
 
   // Auto-advance every 5 seconds
