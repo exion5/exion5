@@ -26,6 +26,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px
 .nav-logo::before{content:'';display:inline-block;width:18px;height:18px;border:1.5px solid var(--copper);border-radius:50%;flex-shrink:0}
 .nav-back{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--silk-dim);text-decoration:none;transition:color 0.15s}
 .nav-back:hover{color:var(--gold)}
+.nav-links{
+  display:flex;
+  gap:2rem;
+  list-style:none;
+  align-items:center;
+}
+
+.nav-links a{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--silk-dim);
+  text-decoration:none;
+  transition:color 0.15s;
+}
+
+.nav-links a:hover{
+  color:var(--gold);
+}
 
 .container{max-width:920px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1}
 
@@ -114,20 +134,30 @@ footer .copper{color:var(--copper)}
   .exp-header{flex-direction:column;align-items:flex-start}
   footer{flex-direction:column;gap:0.5rem;text-align:center}
 }
+@media(max-width:480px){
+  .nav-links{
+    display:none;
+  }
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="../index.html">ETHAN</a>
-  <a class="nav-back" href="../index.html">← Back to portfolio</a>
+  <a class="nav-logo" href="index.html">ETHAN</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="all-projects.html">Projects</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
 </nav>
 
 <div class="container">
   <div class="page-hero">
     <p class="page-refdes">U6 · Full project index</p>
     <h1 class="page-title">All Projects.</h1>
-    <p class="page-sub">Everything I've built — hardware, firmware, and software. From PCB layout to game development.</p>
+    <p class="page-sub">Everything I've built: hardware, firmware, and software. From PCB layout to game development.</p>
   </div>
 
   <!-- FILTER -->
@@ -142,7 +172,7 @@ footer .copper{color:var(--copper)}
   <p class="cat-label">Hardware</p>
   <div class="projects-list">
 
-    <a class="project-card" href="scope-monitor.html" data-cat="hardware firmware">
+    <a class="project-card" href="projects/scope-monitor.html" data-cat="hardware firmware">
       <div class="card-header">
         <span class="card-refdes">J1 · SCOPE Monitor</span>
         <span class="card-award">★ IEEE Technical Award</span>
@@ -151,10 +181,11 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">IoT SCOPE Monitor System</h3>
         <ul class="card-bullets">
-          <li>Designed, prototyped, and soldered a multi-sensor embedded system for room monitoring on a Raspberry Pi Zero 2W, integrating 4 environmental sensors</li>
-          <li>Integrated I²C and UART protocols for reliable communication, achieving &lt;3% packet loss</li>
-          <li>Processed and transmitted data to a local dashboard for real-time monitoring and alerts</li>
-          <li>Created threshold-based filtering and event-based logic to classify alert scenarios, reducing false positives by 30%</li>
+          SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
+          radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
+          the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
+          over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
+          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
         </ul>
         <div class="card-tags">
           <span class="tag">RPi Zero 2W</span><span class="tag">I²C</span><span class="tag">UART</span>
@@ -164,18 +195,20 @@ footer .copper{color:var(--copper)}
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
     </a>
 
-    <a class="project-card" href="arduino-pcb.html" data-cat="hardware">
+    <a class="project-card" href="projects/arduino-pcb.html" data-cat="hardware">
       <div class="card-header">
-        <span class="card-refdes">J2 · Custom Arduino PCB</span>
-        <span class="card-date">Apr. 2026 – Aug. 2026</span>
+        <span class="card-refdes">J2 · Custom Arduino Nano PCB</span>
+        <span class="card-date">Mar. 2026 – May 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Custom Drone & Controller Transmitter — ATmega328P PCB</h3>
+        <h3 class="card-title">ATmega328P PCB</h3>
         <ul class="card-bullets">
-          <li>Designed a 2.4 GHz RC TX and RX system using NRF24L01 to establish wireless communication</li>
-          <li>Created multi-layered PCBs in KiCad and prepared boards for manufacturing through JLCPCB</li>
-          <li>Developed embedded firmware in C++ for sensor integration, input parsing, and drone control logic</li>
-          <li>Regulated 3.3V power delivery and power distribution networks for RF stability</li>
+          A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+          Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
+          ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
+          protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
+          from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 4-layer layout with 0.8 mm VBUS & power
+          traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.
         </ul>
         <div class="card-tags">
           <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">NRF24L01</span>
@@ -185,18 +218,18 @@ footer .copper{color:var(--copper)}
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
     </a>
 
-    <a class="project-card" href="rc-transmitter.html" data-cat="hardware firmware">
+    <a class="project-card" href="projects/rc-drone.html" data-cat="hardware firmware">
       <div class="card-header">
-        <span class="card-refdes">J3 · RC Transmitter</span>
+        <span class="card-refdes">J3 · RC Drone & Transmitter</span>
         <span class="card-date">Apr. 2026 – Aug. 2026</span>
       </div>
       <div class="card-body">
         <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
         <ul class="card-bullets">
-          <li>Built a handheld RC transmitter from scratch targeting a custom drone receiver</li>
-          <li>BSS138 bidirectional level shifting between 5V Arduino and 3.3V RF/IMU peripherals</li>
-          <li>Fixed-struct radio packet transmitted at 50 Hz over SPI NRF24L01</li>
-          <li>MPU-6050 tilt sensing over I²C for orientation-based control input</li>
+          This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
+          It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
+          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
+          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.
         </ul>
         <div class="card-tags">
           <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
@@ -206,7 +239,7 @@ footer .copper{color:var(--copper)}
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
     </a>
 
-    <a class="project-card" href="keyboard.html" data-cat="hardware firmware">
+    <a class="project-card" href="projects/keyboard.html" data-cat="hardware firmware">
       <div class="card-header">
         <span class="card-refdes">J4 · Mechanical Keyboard</span>
         <span class="card-date">Mar. 2026 – Apr. 2026</span>
@@ -226,7 +259,7 @@ footer .copper{color:var(--copper)}
       <div class="card-footer"><span class="card-link">Coming soon</span></div>
     </a>
 
-    <a class="project-card" href="raspberry-pi-console.html" data-cat="hardware">
+    <a class="project-card" href="projects/raspberry-pi-console.html" data-cat="hardware">
       <div class="card-header">
         <span class="card-refdes">J5 · Pi Gaming Console</span>
         <span class="card-date">Dec. 2024 – Feb. 2025</span>
@@ -273,7 +306,7 @@ footer .copper{color:var(--copper)}
     <div class="project-card" href="projects/pixel-purge.html" data-cat="software">
       <div class="card-header">
         <span class="card-refdes">SW2 · Pixel Purge</span>
-        <span class="card-date">2025</span>
+        <span class="card-date">May 2026</span>
       </div>
       <div class="card-body">
         <h3 class="card-title">Pixel Purge — Space Invaders Clone</h3>
