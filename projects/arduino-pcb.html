@@ -246,8 +246,8 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
             management, no charging, and no protection circuitry. The focus was getting the ATmega328P,
             FT232RL USB bridge, and pin headers correct before tackling power complexity. Essentially,
             it was a proof-of-concept for the basic functionality and acted identically to a traditional Arduino Nano. 
-            Before moving to Rev 2, it became clear that relying on an external power supply wasn't 
-            practical for a handheld transmitter. The decision to integrate a full battery management 
+            It became clear that relying on an external power supply wasn't 
+            practical. The decision to integrate a full battery management 
             system drove the complete redesign of the power section in the next revision.
           </p>
         </div>
@@ -315,7 +315,4 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
     showSlide(current + dir);
     timer = setInterval(() => changeSlide(1), 5000);
   }
-
-  // Auto-advance every 5 seconds
-  setInterval(() => changeSlide(1), 5000);
 </script>
