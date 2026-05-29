@@ -237,13 +237,18 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
 
   <div class="content-section">
     <p class="section-heading"><span class="ref">S5 ·</span> Prototypes</p>
-    <div class="prose">
-      <p>
+    <div class="two-col" style="align-items: start;">
+      <div class="prose">
+        <p>
         <strong>Rev 1</strong> was a minimal first pass, the power system used a simple
         <strong>LM1117MP-5.0 linear regulator</strong> fed from an external supply, with no battery
         management, no charging, and no protection circuitry. The focus was getting the ATmega328P,
-        FT232RL USB bridge, and pin headers correct before tackling power complexity.
-      </p>
+        FT232RL USB bridge, and pin headers correct before tackling power complexity.</p>
+      </div>
+      <img src="../images/schematicV1.jpg" alt="PCB Front View"
+          style="width:100%; border-radius:2px; border:1px solid var(--border2);">
+    </div>
+    <div class="prose">
       <p>
         <strong>Rev 2 (current)</strong> replaced the entire power section with a proper battery-powered
         architecture: a <strong>TPS61022 boost converter</strong> for 5V output from a LiPo cell,
