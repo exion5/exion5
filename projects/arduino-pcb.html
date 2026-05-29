@@ -245,7 +245,10 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
             <strong>LM1117MP-5.0 linear regulator</strong> fed from an external supply, with no battery
             management, no charging, and no protection circuitry. The focus was getting the ATmega328P,
             FT232RL USB bridge, and pin headers correct before tackling power complexity. Essentially,
-            it was a proof-of-concept for the basic functionality and acted identically to a traditional Arduino Nano.
+            it was a proof-of-concept for the basic functionality and acted identically to a traditional Arduino Nano. 
+            Before moving to Rev 2, it became clear that relying on an external power supply wasn't 
+            practical for a handheld transmitter. The decision to integrate a full battery management 
+            system drove the complete redesign of the power section in the next revision.
           </p>
         </div>
       </div>
@@ -253,9 +256,9 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
       <!-- SLIDESHOW -->
       <div style="position: relative; border: 5px solid var(--copper); border-radius: 2px; overflow: hidden; padding: 6px; background: var(--copper-bg);">
         <div id="slideshow" style="position: relative;">
-          <img src="../images/frontV1.jpg"      alt="PCB Front"  class="slide" style="width:100%; height: 175px; display:none; border-radius: 1px; object-fit: cover;">
-          <img src="../images/backV1.jpg"      alt="PCB Back"  class="slide" style="width:100%; height: 175px; display:none; border-radius: 1px; object-fit: cover;">
-          <img src="../images/schematicV1.jpg" alt="Schematic" class="slide" style="width:100%; height: 175px; display:block; border-radius: 1px; object-fit: cover;">
+          <img src="../images/schematicV1.jpg" alt="Schematic" class="slide" style="width:100%; height: 200px; display:block; border-radius: 1px; object-fit: cover;">
+          <img src="../images/frontV1.jpg"      alt="PCB Front"  class="slide" style="width:100%; height: 200px; display:none; border-radius: 1px; object-fit: cover;">
+          <img src="../images/backV1.jpg"      alt="PCB Back"  class="slide" style="width:100%; height: 200px; display:none; border-radius: 1px; object-fit: cover;">
         </div>
 
         <!-- Controls -->
