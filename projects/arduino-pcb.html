@@ -82,16 +82,16 @@ footer .copper{color:var(--copper)}
   <div class="project-hero">
     <p class="project-refdes">2026</p>
     <h1 class="project-title">Custom Arduino PCB</h1>
-    <p class="project-subtitle">ATmega328P Board — KiCad to JLCPCB</p>
+    <p class="project-subtitle">ATmega328P-MU Board — KiCad to JLCPCB</p>
     <p class="project-lede">
-      A full Arduino Nano equivalent designed from scratch in KiCad — integrating power management,
-      USB communication, LiPo charging, and battery protection on a 2-layer board fabricated at JLCPCB.
+      I designed a full Arduino Nano equivalent designed from scratch in KiCad, integrating power management,
+      USB communication, LiPo charging, and battery protection on a 4-layer board fabricated at JLCPCB.
     </p>
   </div>
 
   <div class="spec-bar">
     <div class="spec-cell"><p class="spec-label">MCU</p><p class="spec-value">ATmega328P</p></div>
-    <div class="spec-cell"><p class="spec-label">Layers</p><p class="spec-value">2-layer</p></div>
+    <div class="spec-cell"><p class="spec-label">Layers</p><p class="spec-value">4-layer</p></div>
     <div class="spec-cell"><p class="spec-label">EDA</p><p class="spec-value">KiCad</p></div>
     <div class="spec-cell"><p class="spec-label">Fab</p><p class="spec-value"><span class="copper">JLCPCB</span></p></div>
   </div>
@@ -101,12 +101,13 @@ footer .copper{color:var(--copper)}
     <div class="prose">
       <p>
         The goal was to design a fully self-contained microcontroller board that could replace an
-        Arduino Nano in the RC transmitter project — but with integrated LiPo charging and battery
+        Arduino Nano in the RC transmitter project since they must be wired to power on. My idea was to create 
+        one with integrated LiPo charging and battery
         management, removing the need for an external charger. Everything from USB connectivity to
-        5V boost conversion had to fit on a small 2-layer board.
+        5V boost conversion had to fit on a small 4-layer board.
       </p>
       <p>
-        The board went through multiple schematic review iterations before layout — every subsystem
+        The board went through multiple schematic review iterations before layout, every subsystem
         (power, USB, protection, charging) was verified independently before being connected together.
       </p>
     </div>
@@ -235,7 +236,25 @@ R10 = <span class="num">732</span> kΩ   <span class="cm"># → V_out = 0.6 × (
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S5 ·</span> Full Stack</p>
+    <p class="section-heading"><span class="ref">S5 ·</span> Prototypes</p>
+    <div class="prose">
+      <p>
+        <strong>Rev 1</strong> was a minimal first pass, the power system used a simple
+        <strong>LM1117MP-5.0 linear regulator</strong> fed from an external supply, with no battery
+        management, no charging, and no protection circuitry. The focus was getting the ATmega328P,
+        FT232RL USB bridge, and pin headers correct before tackling power complexity.
+      </p>
+      <p>
+        <strong>Rev 2 (current)</strong> replaced the entire power section with a proper battery-powered
+        architecture: a <strong>TPS61022 boost converter</strong> for 5V output from a LiPo cell,
+        <strong>MCP73831</strong> for USB charging, and <strong>DW01A + FS8205A</strong> for
+        overcurrent and overdischarge protection.
+      </p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S6 ·</span> Full Stack</p>
     <div class="tags">
       <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">FT232RL</span>
       <span class="tag">TPS61022 Boost</span><span class="tag">MCP73831</span><span class="tag">DW01A</span>
