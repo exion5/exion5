@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>All Projects — Ethan Xiong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --fr4-dark:#1A2B1E;--fr4-mid:#1E3323;--fr4-light:#243D29;--fr4-surface:#2A4430;
+  --copper:#C8821A;--copper-dim:#8A5510;--copper-bg:#2A1E0A;
+  --gold:#E8A830;--gold-dim:#A06A10;
+  --silk:#EEF2EC;--silk-dim:#A8B8A4;--silk-faint:#607060;
+  --border:rgba(200,130,26,0.15);--border2:rgba(200,130,26,0.30);--border3:rgba(200,130,26,0.50);
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'IBM Plex Serif',serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--fr4-dark);color:var(--silk);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,130,26,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,130,26,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(200,130,26,0.12) 1px,transparent 1px);background-size:48px 48px;background-position:24px 24px;pointer-events:none;z-index:0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;background:rgba(26,43,30,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2)}
+.nav-logo{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--gold);text-decoration:none;letter-spacing:0.04em;display:flex;align-items:center;gap:10px}
+.nav-logo::before{content:'';display:inline-block;width:18px;height:18px;border:1.5px solid var(--copper);border-radius:50%;flex-shrink:0}
+.nav-back{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--silk-dim);text-decoration:none;transition:color 0.15s}
+.nav-back:hover{color:var(--gold)}
+
+.container{max-width:920px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1}
+
+/* PAGE HEADER */
+.page-hero{padding:8rem 0 3rem}
+.page-refdes{font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--silk-faint);margin-bottom:1.25rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.1s}
+.page-title{font-family:var(--serif);font-size:clamp(2.5rem,7vw,4.5rem);font-weight:300;font-style:italic;line-height:1.05;letter-spacing:-0.02em;color:var(--silk);margin-bottom:1rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.2s}
+.page-sub{font-size:14px;font-weight:300;color:var(--silk-dim);max-width:540px;line-height:1.8;opacity:0;animation:fadeUp 0.5s ease forwards 0.3s}
+
+/* FILTER BAR */
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:3rem;opacity:0;animation:fadeUp 0.5s ease forwards 0.4s}
+.filter-btn{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--silk-dim);cursor:pointer;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--border3);color:var(--silk)}
+.filter-btn.active{background:var(--copper);border-color:var(--copper);color:var(--fr4-dark)}
+
+/* CATEGORY LABEL */
+.cat-label{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--copper);margin-bottom:1.5rem;margin-top:3rem}
+.cat-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)}
+.cat-label:first-of-type{margin-top:0}
+
+/* PROJECT CARDS */
+.projects-list{display:flex;flex-direction:column;gap:2px}
+
+.project-card{
+  border:1px solid var(--border);
+  border-radius:2px;
+  background:var(--bg2);
+  overflow:hidden;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  transition:border-color 0.2s, background 0.2s;
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s;
+}
+.project-card:hover{border-color:var(--border2);background:var(--fr4-light)}
+.project-card.visible{opacity:1;transform:translateY(0)}
+.project-card.no-page{cursor:default}
+
+.card-header{background:var(--fr4-light);border-bottom:1px solid var(--border);padding:8px 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-refdes{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--copper)}
+.card-date{font-family:var(--mono);font-size:10px;color:var(--silk-faint)}
+.card-award{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:var(--gold);border:1px solid var(--gold-dim);background:var(--copper-bg);padding:3px 10px;border-radius:1px}
+
+.card-body{padding:1.5rem}
+.card-title{font-family:var(--serif);font-size:20px;font-weight:300;font-style:italic;color:var(--silk);margin-bottom:0.6rem;letter-spacing:-0.01em;transition:color 0.2s}
+.project-card:hover .card-title{color:var(--gold)}
+.card-desc{font-size:13px;font-weight:300;color:var(--silk-dim);line-height:1.85;margin-bottom:1.25rem}
+
+/* Bullet points for project cards */
+.card-bullets{list-style:none;margin-bottom:1.25rem}
+.card-bullets li{font-size:13px;font-weight:300;color:var(--silk-dim);line-height:1.8;padding-left:1.25rem;position:relative;margin-bottom:2px}
+.card-bullets li::before{content:'→';position:absolute;left:0;color:var(--copper-dim);font-family:var(--mono);font-size:11px}
+
+.card-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;padding:3px 8px;border-radius:1px;background:var(--fr4-surface);color:var(--silk-dim);border:1px solid var(--border)}
+.project-card:hover .tag{border-color:var(--border2)}
+
+.card-footer{padding:10px 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end}
+.card-link{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);transition:color 0.15s}
+.project-card:hover .card-link{color:var(--gold)}
+
+/* EXPERIENCE SECTION */
+.exp-card{border:1px solid var(--border);border-radius:2px;background:var(--fr4-mid);overflow:hidden;margin-bottom:2px}
+.exp-header{background:var(--fr4-light);border-bottom:1px solid var(--border);padding:10px 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.exp-role{font-family:var(--serif);font-size:17px;font-weight:300;font-style:italic;color:var(--silk)}
+.exp-date{font-family:var(--mono);font-size:10px;color:var(--silk-faint)}
+.exp-body{padding:1.5rem}
+.exp-org{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--copper);margin-bottom:1rem}
+.exp-bullets{list-style:none}
+.exp-bullets li{font-size:13px;font-weight:300;color:var(--silk-dim);line-height:1.8;padding-left:1.25rem;position:relative;margin-bottom:2px}
+.exp-bullets li::before{content:'→';position:absolute;left:0;color:var(--copper-dim);font-family:var(--mono);font-size:11px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;margin-top:6rem}
+footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint)}
+footer .copper{color:var(--copper)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:700px){
+  .container{padding:0 1.25rem}
+  nav{padding:0 1.25rem}
+  .card-header{flex-direction:column;align-items:flex-start;gap:4px}
+  .exp-header{flex-direction:column;align-items:flex-start}
+  footer{flex-direction:column;gap:0.5rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">ETHAN</a>
+  <a class="nav-back" href="../index.html">← Back to portfolio</a>
+</nav>
+
+<div class="container">
+  <div class="page-hero">
+    <p class="page-refdes">U6 · Full project index</p>
+    <h1 class="page-title">All Projects.</h1>
+    <p class="page-sub">Everything I've built — hardware, firmware, and software. From PCB layout to game development.</p>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+    <button class="filter-btn" onclick="filterCards('hardware', this)">Hardware</button>
+    <button class="filter-btn" onclick="filterCards('software', this)">Software</button>
+    <button class="filter-btn" onclick="filterCards('firmware', this)">Firmware</button>
+  </div>
+
+  <!-- HARDWARE PROJECTS -->
+  <p class="cat-label">Hardware</p>
+  <div class="projects-list">
+
+    <a class="project-card" href="scope-monitor.html" data-cat="hardware firmware">
+      <div class="card-header">
+        <span class="card-refdes">J1 · SCOPE Monitor</span>
+        <span class="card-award">★ IEEE Technical Award</span>
+        <span class="card-date">Sept. 2025 – Mar. 2026</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">IoT SCOPE Monitor System</h3>
+        <ul class="card-bullets">
+          <li>Designed, prototyped, and soldered a multi-sensor embedded system for room monitoring on a Raspberry Pi Zero 2W, integrating 4 environmental sensors</li>
+          <li>Integrated I²C and UART protocols for reliable communication, achieving &lt;3% packet loss</li>
+          <li>Processed and transmitted data to a local dashboard for real-time monitoring and alerts</li>
+          <li>Created threshold-based filtering and event-based logic to classify alert scenarios, reducing false positives by 30%</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">RPi Zero 2W</span><span class="tag">I²C</span><span class="tag">UART</span>
+          <span class="tag">Flask</span><span class="tag">pigpio</span><span class="tag">Python</span><span class="tag">systemd</span>
+        </div>
+      </div>
+      <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
+    </a>
+
+    <a class="project-card" href="arduino-pcb.html" data-cat="hardware">
+      <div class="card-header">
+        <span class="card-refdes">J2 · Custom Arduino PCB</span>
+        <span class="card-date">Apr. 2026 – Aug. 2026</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Custom Drone & Controller Transmitter — ATmega328P PCB</h3>
+        <ul class="card-bullets">
+          <li>Designed a 2.4 GHz RC TX and RX system using NRF24L01 to establish wireless communication</li>
+          <li>Created multi-layered PCBs in KiCad and prepared boards for manufacturing through JLCPCB</li>
+          <li>Developed embedded firmware in C++ for sensor integration, input parsing, and drone control logic</li>
+          <li>Regulated 3.3V power delivery and power distribution networks for RF stability</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">NRF24L01</span>
+          <span class="tag">TPS61022</span><span class="tag">MCP73831</span><span class="tag">JLCPCB</span><span class="tag">C++</span>
+        </div>
+      </div>
+      <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
+    </a>
+
+    <a class="project-card" href="rc-transmitter.html" data-cat="hardware firmware">
+      <div class="card-header">
+        <span class="card-refdes">J3 · RC Transmitter</span>
+        <span class="card-date">Apr. 2026 – Aug. 2026</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
+        <ul class="card-bullets">
+          <li>Built a handheld RC transmitter from scratch targeting a custom drone receiver</li>
+          <li>BSS138 bidirectional level shifting between 5V Arduino and 3.3V RF/IMU peripherals</li>
+          <li>Fixed-struct radio packet transmitted at 50 Hz over SPI NRF24L01</li>
+          <li>MPU-6050 tilt sensing over I²C for orientation-based control input</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
+          <span class="tag">BSS138</span><span class="tag">SPI</span><span class="tag">I²C</span><span class="tag">Perfboard</span>
+        </div>
+      </div>
+      <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
+    </a>
+
+    <a class="project-card" href="keyboard.html" data-cat="hardware firmware">
+      <div class="card-header">
+        <span class="card-refdes">J4 · Mechanical Keyboard</span>
+        <span class="card-date">Mar. 2026 – Apr. 2026</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Handmade 68-Key Mechanical Keyboard</h3>
+        <ul class="card-bullets">
+          <li>Designed and implemented a 68-key diode matrix, establishing accurate key and signal scanning</li>
+          <li>Integrated a Teensy microcontroller, configuring QMK firmware for USB HID communication</li>
+          <li>3D-printed custom case in Fusion 360 and hand-wired all switch connections</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Teensy</span><span class="tag">QMK</span><span class="tag">Diode Matrix</span>
+          <span class="tag">Fusion 360</span><span class="tag">3D Printing</span><span class="tag">Hand-wired</span>
+        </div>
+      </div>
+      <div class="card-footer"><span class="card-link">Coming soon</span></div>
+    </a>
+
+    <a class="project-card" href="raspberry-pi-console.html" data-cat="hardware">
+      <div class="card-header">
+        <span class="card-refdes">J5 · Pi Gaming Console</span>
+        <span class="card-date">Dec. 2024 – Feb. 2025</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Raspberry Pi Handheld Gaming Console</h3>
+        <ul class="card-bullets">
+          <li>Designed and assembled handheld console using Raspberry Pi 4 + Arduino with a USB power interface</li>
+          <li>Integrated an IPS display with integrated speaker into a custom 3D-printed enclosure</li>
+          <li>Configured a PiSugar 2 Pro battery board for portable power management and reliable charging</li>
+          <li>Wired and soldered a multi-button input matrix to GPIO, debugging signal conflicts between peripherals</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Raspberry Pi 4</span><span class="tag">Arduino</span><span class="tag">RetroPie</span>
+          <span class="tag">PiSugar 2 Pro</span><span class="tag">IPS Display</span><span class="tag">GPIO</span>
+        </div>
+      </div>
+      <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
+    </a>
+    
+  </div>
+
+  <!-- SOFTWARE PROJECTS -->
+  <p class="cat-label" style="margin-top:3rem">Software</p>
+  <div class="projects-list">
+
+    <div class="project-card" href="projects/exion-ke.html" data-cat="software">
+      <div class="card-header">
+        <span class="card-refdes">SW1 · Keyboard Firmware Editor</span>
+        <span class="card-date">Aug. 2026 – Sept. 2026</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Keyboard Firmware Editor</h3>
+        <ul class="card-bullets">
+          <li>Developed a web app that lets users design a custom keyboard layout and generates compatible firmware</li>
+          <li>Built an interactive key mapping interface to allow users to assign keycodes, macros, and layers</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Web App</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card" href="projects/pixel-purge.html" data-cat="software">
+      <div class="card-header">
+        <span class="card-refdes">SW2 · Pixel Purge</span>
+        <span class="card-date">2025</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Pixel Purge — Space Invaders Clone</h3>
+        <ul class="card-bullets">
+          <li>Built a full Space Invaders clone from scratch in Java using Swing for rendering</li>
+          <li>Implemented game loop, collision detection, enemy wave logic, and score tracking</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Java</span><span class="tag">Swing</span><span class="tag">Game Dev</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <span class="copper">Ethan Xiong</span> · Electrical Engineering · University of Waterloo</p>
+  <p>Rev 1.0</p>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
+
+  // Filter
+  function filterCards(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.project-card').forEach(card => {
+      const cats = card.dataset.cat || '';
+      card.style.display = (cat === 'all' || cats.includes(cat)) ? 'block' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
