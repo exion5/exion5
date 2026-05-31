@@ -105,6 +105,49 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;padding:3px 8px;border-radius:1px;background:var(--fr4-surface);color:var(--silk-dim);border:1px solid var(--border)}
 .project-card:hover .tag{border-color:var(--border2)}
 
+.card-body-inner{display:flex;gap:1.5rem;align-items:center}
+.card-content{flex:1;min-width:0}
+.card-image-group{
+  flex-shrink:0;
+  width:200px;
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-evenly;
+  gap:8px;
+}
+.card-image-placeholder{
+  flex:1;
+  min-height:100px;
+  border:1px dashed var(--border2);
+  border-radius:2px;
+  background:var(--fr4-surface);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:var(--silk-faint);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  position:relative;
+  overflow:hidden;
+}
+.card-image-placeholder::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(200,130,26,0.04) 0%,transparent 60%);
+}
+.card-image-placeholder svg{opacity:0.35;flex-shrink:0}
+.card-image-label{opacity:0.5;text-align:center;line-height:1.6}
+@media(max-width:700px){
+  .card-body-inner{flex-direction:column;align-items:stretch}
+  .card-image-group{width:100%;flex-direction:row;height:100px;align-self:auto}
+  .card-image-placeholder{min-height:unset}
+}
 .card-footer{padding:10px 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end}
 .card-link{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);transition:color 0.15s}
 .project-card:hover .card-link{color:var(--gold)}
@@ -179,17 +222,25 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Sept. 2025 – Mar. 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">IoT SCOPE Monitor System</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
-          radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
-          the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
-          over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
-          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.</p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">RPi Zero 2W</span><span class="tag">I²C</span><span class="tag">UART</span>
-          <span class="tag">Flask</span><span class="tag">pigpio</span><span class="tag">Python</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">IoT SCOPE Monitor System</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
+              radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
+              the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
+              over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
+              occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.</p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">RPi Zero 2W</span><span class="tag">I²C</span><span class="tag">UART</span>
+              <span class="tag">Flask</span><span class="tag">pigpio</span><span class="tag">Python</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Project photo<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
@@ -201,18 +252,26 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Mar. 2026 – May 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">ATmega328P PCB</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
-          Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
-          ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
-          protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
-          from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 4-layer layout with 0.8 mm VBUS & power
-          traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.</p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">NRF24L01</span>
-          <span class="tag">TPS61022</span><span class="tag">MCP73831</span><span class="tag">JLCPCB</span><span class="tag">C++</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">ATmega328P PCB</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+              Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
+              ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
+              protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
+              from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 4-layer layout with 0.8 mm VBUS & power
+              traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.</p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">NRF24L01</span>
+              <span class="tag">TPS61022</span><span class="tag">MCP73831</span><span class="tag">JLCPCB</span><span class="tag">C++</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Project photo<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
@@ -224,16 +283,24 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Apr. 2026 – Aug. 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
-          It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
-          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
-          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.</p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
-          <span class="tag">BSS138</span><span class="tag">SPI</span><span class="tag">I²C</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
+              It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
+              rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
+              logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.</p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
+              <span class="tag">BSS138</span><span class="tag">SPI</span><span class="tag">I²C</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Project photo<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
@@ -245,16 +312,24 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Mar. 2026 – Apr. 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Handmade 68-Key Mechanical Keyboard</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">I designed and built a custom 68-key mechanical keyboard from scratch, starting with a hand-drawn layout and switch placement. 
-          I used the Teensy microcontroller as the brain, and implemented a diode matrix for accurate key scanning. The firmware was built using QMK, 
-          which I configured to handle USB HID communication and custom key mappings. For the case, I designed a sleek enclosure in Fusion 360 
-          and 3D-printed it, then hand-wired all the switch connections to the Teensy.</p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">Teensy</span><span class="tag">QMK</span><span class="tag">Diode Matrix</span>
-          <span class="tag">Fusion 360</span><span class="tag">3D Printing</span><span class="tag">Hand-wired</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">Handmade 68-Key Mechanical Keyboard</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">I designed and built a custom 68-key mechanical keyboard from scratch, starting with a hand-drawn layout and switch placement. 
+              I used the Teensy microcontroller as the brain, and implemented a diode matrix for accurate key scanning. The firmware was built using QMK, 
+              which I configured to handle USB HID communication and custom key mappings. For the case, I designed a sleek enclosure in Fusion 360 
+              and 3D-printed it, then hand-wired all the switch connections to the Teensy.</p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">Teensy</span><span class="tag">QMK</span><span class="tag">Diode Matrix</span>
+              <span class="tag">Fusion 360</span><span class="tag">3D Printing</span><span class="tag">Hand-wired</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Project photo<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Coming soon</span></div>
@@ -266,17 +341,25 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Dec. 2024 – Feb. 2025</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Raspberry Pi Handheld Gaming Console</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">This project involved creating a portable handheld gaming console using a Raspberry Pi 4 and an Arduino Mini for controller input. 
-            I set up RetroPie on the Pi for emulation, and designed custom 3D printed stability enclosures on Fusion 360 to house the components. 
-            The controller interface was built using a matrix of buttons connected to the Arduino, which communicated with the Pi over USB serial. 
-            I also integrated an IPS display and configured a PiSugar battery board for portable power management.
-          </p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">Raspberry Pi 4</span><span class="tag">Arduino</span><span class="tag">RetroPie</span>
-          <span class="tag">PiSugar 2 Pro</span><span class="tag">Fusion 360</span><span class="tag">Perfboards</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">Raspberry Pi Handheld Gaming Console</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">This project involved creating a portable handheld gaming console using a Raspberry Pi 4 and an Arduino Mini for controller input. 
+                I set up RetroPie on the Pi for emulation, and designed custom 3D printed stability enclosures on Fusion 360 to house the components. 
+                The controller interface was built using a matrix of buttons connected to the Arduino, which communicated with the Pi over USB serial. 
+                I also integrated an IPS display and configured a PiSugar battery board for portable power management.
+              </p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">Raspberry Pi 4</span><span class="tag">Arduino</span><span class="tag">RetroPie</span>
+              <span class="tag">PiSugar 2 Pro</span><span class="tag">Fusion 360</span><span class="tag">Perfboards</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Project photo<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
@@ -294,15 +377,23 @@ footer .copper{color:var(--copper)}
         <span class="card-date">Aug. 2026 – Sept. 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Keyboard Firmware Editor</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">I developed a web app that lets users design a custom keyboard layout and generates compatible firmware. 
-          The app features an interactive key mapping interface where users can assign keycodes, macros, and layers to each key. I designed it because I felt that 
-          there were too many different websites I used when designing my own mechanical keyboard and wanted a more streamlined experience. 
-          The frontend was built with React and TypeScript, and the backend uses Node.js to compile the firmware based on user input.</p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Web App</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">Keyboard Firmware Editor</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">I developed a web app that lets users design a custom keyboard layout and generates compatible firmware. 
+              The app features an interactive key mapping interface where users can assign keycodes, macros, and layers to each key. I designed it because I felt that 
+              there were too many different websites I used when designing my own mechanical keyboard and wanted a more streamlined experience. 
+              The frontend was built with React and TypeScript, and the backend uses Node.js to compile the firmware based on user input.</p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Web App</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Screenshot<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
     </div>
@@ -313,15 +404,23 @@ footer .copper{color:var(--copper)}
         <span class="card-date">May 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Pixel Purge · Space Invaders Clone</h3>
-        <ul class="card-bullets">
-          <p class="card-desc">In my ICS4U course, I built a full Space Invaders clone from scratch in Java using Swing for rendering. 
-          The project involved implementing the core game mechanics, including a game loop, collision detection, enemy wave logic, and score tracking. 
-          It also included a login screen to help users track their own progress within the game. 
-        </p>
-        </ul>
-        <div class="card-tags">
-          <span class="tag">Java</span><span class="tag">Swing</span><span class="tag">Game Dev</span><span class="tag">Vercel Deployment</span>
+        <div class="card-body-inner">
+          <div class="card-content">
+            <h3 class="card-title">Pixel Purge · Space Invaders Clone</h3>
+            <ul class="card-bullets">
+              <p class="card-desc">In my ICS4U course, I built a full Space Invaders clone from scratch in Java using Swing for rendering. 
+              The project involved implementing the core game mechanics, including a game loop, collision detection, enemy wave logic, and score tracking. 
+              It also included a login screen to help users track their own progress within the game. 
+            </p>
+            </ul>
+            <div class="card-tags">
+              <span class="tag">Java</span><span class="tag">Swing</span><span class="tag">Game Dev</span><span class="tag">Vercel Deployment</span>
+            </div>
+          </div>
+          <div class="card-image-group"><div class="card-image-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span class="card-image-label">Screenshot<br/>placeholder</span>
+          </div></div>
         </div>
       </div>
     </div>
