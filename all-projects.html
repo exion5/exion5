@@ -144,7 +144,7 @@ footer .copper{color:var(--copper)}
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">ETHAN</a>
+  <a class="nav-logo" href="index.html">ETHAN XIONG</a>
   <ul class="nav-links">
     <li><a href="index.html#about">About</a></li>
     <li><a href="all-projects.html">Projects</a></li>
@@ -181,11 +181,11 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">IoT SCOPE Monitor System</h3>
         <ul class="card-bullets">
-          SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
+          <p class="card-desc">SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
           radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
           the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
           over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
-          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
+          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.</p>
         </ul>
         <div class="card-tags">
           <span class="tag">RPi Zero 2W</span><span class="tag">I²C</span><span class="tag">UART</span>
@@ -203,12 +203,12 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">ATmega328P PCB</h3>
         <ul class="card-bullets">
-          A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+          <p class="card-desc">A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
           Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
           ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
           protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
           from the 0.6V reference: R10 = 750 kΩ, R11 = 100 kΩ. 4-layer layout with 0.8 mm VBUS & power
-          traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.
+          traces, 0.2 mm signal traces, and equal-length USB D+/D− routing.</p>
         </ul>
         <div class="card-tags">
           <span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">NRF24L01</span>
@@ -226,10 +226,10 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
         <ul class="card-bullets">
-          This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
+          <p class="card-desc">This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
           It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
           rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
-          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.
+          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.</p>
         </ul>
         <div class="card-tags">
           <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
@@ -247,9 +247,10 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">Handmade 68-Key Mechanical Keyboard</h3>
         <ul class="card-bullets">
-          <li>Designed and implemented a 68-key diode matrix, establishing accurate key and signal scanning</li>
-          <li>Integrated a Teensy microcontroller, configuring QMK firmware for USB HID communication</li>
-          <li>3D-printed custom case in Fusion 360 and hand-wired all switch connections</li>
+          <p class="card-desc">I designed and built a custom 68-key mechanical keyboard from scratch, starting with a hand-drawn layout and switch placement. 
+          I used the Teensy microcontroller as the brain, and implemented a diode matrix for accurate key scanning. The firmware was built using QMK, 
+          which I configured to handle USB HID communication and custom key mappings. For the case, I designed a sleek enclosure in Fusion 360 
+          and 3D-printed it, then hand-wired all the switch connections to the Teensy.</p>
         </ul>
         <div class="card-tags">
           <span class="tag">Teensy</span><span class="tag">QMK</span><span class="tag">Diode Matrix</span>
@@ -267,14 +268,15 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">Raspberry Pi Handheld Gaming Console</h3>
         <ul class="card-bullets">
-          <li>Designed and assembled handheld console using Raspberry Pi 4 + Arduino with a USB power interface</li>
-          <li>Integrated an IPS display with integrated speaker into a custom 3D-printed enclosure</li>
-          <li>Configured a PiSugar 2 Pro battery board for portable power management and reliable charging</li>
-          <li>Wired and soldered a multi-button input matrix to GPIO, debugging signal conflicts between peripherals</li>
+          <p class="card-desc">This project involved creating a portable handheld gaming console using a Raspberry Pi 4 and an Arduino Mini for controller input. 
+            I set up RetroPie on the Pi for emulation, and designed custom 3D printed stability enclosures on Fusion 360 to house the components. 
+            The controller interface was built using a matrix of buttons connected to the Arduino, which communicated with the Pi over USB serial. 
+            I also integrated an IPS display and configured a PiSugar battery board for portable power management.
+          </p>
         </ul>
         <div class="card-tags">
           <span class="tag">Raspberry Pi 4</span><span class="tag">Arduino</span><span class="tag">RetroPie</span>
-          <span class="tag">PiSugar 2 Pro</span><span class="tag">IPS Display</span><span class="tag">GPIO</span>
+          <span class="tag">PiSugar 2 Pro</span><span class="tag">GPIO</span>
         </div>
       </div>
       <div class="card-footer"><span class="card-link">Read deep-dive →</span></div>
@@ -294,8 +296,10 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <h3 class="card-title">Keyboard Firmware Editor</h3>
         <ul class="card-bullets">
-          <li>Developed a web app that lets users design a custom keyboard layout and generates compatible firmware</li>
-          <li>Built an interactive key mapping interface to allow users to assign keycodes, macros, and layers</li>
+          <p class="card-desc">I developed a web app that lets users design a custom keyboard layout and generates compatible firmware. 
+          The app features an interactive key mapping interface where users can assign keycodes, macros, and layers to each key. I designed it because I felt that 
+          there were too many different websites I used when designing my own mechanical keyboard and wanted a more streamlined experience. 
+          The frontend was built with React and TypeScript, and the backend uses Node.js to compile the firmware based on user input.</p>
         </ul>
         <div class="card-tags">
           <span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Web App</span>
@@ -309,13 +313,15 @@ footer .copper{color:var(--copper)}
         <span class="card-date">May 2026</span>
       </div>
       <div class="card-body">
-        <h3 class="card-title">Pixel Purge — Space Invaders Clone</h3>
+        <h3 class="card-title">Pixel Purge · Space Invaders Clone</h3>
         <ul class="card-bullets">
-          <li>Built a full Space Invaders clone from scratch in Java using Swing for rendering</li>
-          <li>Implemented game loop, collision detection, enemy wave logic, and score tracking</li>
+          <p class="card-desc">In my ICS4U course, I built a full Space Invaders clone from scratch in Java using Swing for rendering. 
+          The project involved implementing the core game mechanics, including a game loop, collision detection, enemy wave logic, and score tracking. 
+          It also included a login screen to help users track their own progress within the game. 
+        </p>
         </ul>
         <div class="card-tags">
-          <span class="tag">Java</span><span class="tag">Swing</span><span class="tag">Game Dev</span>
+          <span class="tag">Java</span><span class="tag">Swing</span><span class="tag">Game Dev</span><span class="tag">Vercel Deployment</span>
         </div>
       </div>
     </div>
@@ -325,8 +331,7 @@ footer .copper{color:var(--copper)}
 </div>
 
 <footer>
-  <p>© 2026 <span class="copper">Ethan Xiong</span> · Electrical Engineering · University of Waterloo</p>
-  <p>Rev 1.0</p>
+  <p><span class="copper">Ethan Xiong</span> · Electrical Engineering · University of Waterloo</p>
 </footer>
 
 <script>

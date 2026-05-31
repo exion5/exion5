@@ -112,6 +112,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;display:flex;jus
 footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint)}
 footer .copper{color:var(--copper)}
 
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.photo-frame{background:var(--fr4-surface);border:1px solid var(--border2);border-radius:2px;overflow:hidden}
+.photo-frame img{width:100%;display:block;object-fit:cover;max-height:340px}
+.photo-caption{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:var(--silk-faint);padding:7px 12px;border-top:1px solid var(--border)}
+.screenshot-frame{background:var(--fr4-surface);border:1px solid var(--border2);border-radius:2px;overflow:hidden;margin:1.5rem 0}
+.screenshot-frame img{width:100%;display:block}
+.screenshot-caption{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:var(--silk-faint);padding:7px 12px;border-top:1px solid var(--border)}
+@media(max-width:600px){.photo-grid{grid-template-columns:1fr}}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:700px){
   .spec-bar{grid-template-columns:repeat(2,1fr)}
@@ -171,6 +182,17 @@ footer .copper{color:var(--copper)}
     </div>
   </div>
 
+
+  <div class="photo-grid">
+    <div class="photo-frame">
+      <img src="../images/scope/sensors.jpg" alt="Sensors connected to Raspberry Pi">
+      <p class="photo-caption">Full sensor array — HLK-LD2450 radar, PMS5003, MQ135, and ADS1115 wired to the Pi Zero 2W</p>
+    </div>
+    <div class="photo-frame">
+      <img src="../images/scope/rasppi.jpg" alt="Raspberry Pi Zero 2W">
+      <p class="photo-caption">Raspberry Pi Zero 2W — GPIO header populated, green activity LED lit during boot</p>
+    </div>
+  </div>
   <!-- OVERVIEW -->
   <div class="content-section">
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
@@ -189,6 +211,52 @@ footer .copper{color:var(--copper)}
     </div>
   </div>
 
+
+  <div class="screenshot-frame">
+    <img src="../images/scope/sensors.png" alt="Sensor readings panel">
+    <p class="screenshot-caption">Activity monitor and live air quality panel — radar targets, VOC (ppm), PM2.5 (mg/m³), and AQI in real time</p>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S1b ·</span> Thread-Safe Data Store</p>
+    <div class="prose">
+      <p>Sensor data arrives on independent threads — one per sensor — while Flask serves HTTP on a separate thread.
+      A central <strong>LiveDataStore</strong> wraps all mutable state behind a
+      <code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">threading.Lock</code>,
+      so reads and writes are never interleaved. It also tracks the highest-threat room across four monitored
+      environments so the dashboard always surfaces the most urgent location.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">app.py — LiveDataStore</span></div>
+      <pre><code><span class="kw">class</span> <span class="fn">LiveDataStore</span>:
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, max_history=<span class="num">100</span>):
+        self.lock = threading.Lock()
+        self.history = {
+            <span class="str">'threat'</span>: deque(maxlen=max_history),
+            <span class="str">'aqi'</span>:    deque(maxlen=max_history),
+            <span class="str">'noise'</span>:  deque(maxlen=max_history),
+        }
+        self.paused_environments = set()
+
+    <span class="kw">def</span> <span class="fn">update</span>(self, data, environment_id=<span class="kw">None</span>):
+        <span class="kw">with</span> self.lock:
+            <span class="kw">if</span> environment_id <span class="kw">in</span> self.paused_environments:
+                <span class="kw">return</span>  <span class="cm"># paused room -- drop update</span>
+            env = self.environments[environment_id]
+            env[<span class="str">'data'</span>]        = data.copy()
+            env[<span class="str">'threat_score'</span>] = data[<span class="str">'threat'</span>][<span class="str">'overall_threat'</span>]
+            env[<span class="str">'last_update'</span>]  = datetime.now()
+            self._update_highest_threat_environment()
+
+    <span class="kw">def</span> <span class="fn">_update_highest_threat_environment</span>(self):
+        self.highest_threat_environment = max(
+            self.environments,
+            key=<span class="kw">lambda</span> k: self.environments[k][<span class="str">'threat_score'</span>]
+        )
+</code></pre>
+    </div>
+  </div>
   <!-- HARDWARE CHALLENGE -->
   <div class="content-section">
     <p class="section-heading"><span class="ref">S2 ·</span> Hardware Challenge — Dual UART</p>
@@ -289,6 +357,74 @@ MAX_TARGETS  = <span class="num">3</span>
     </div>
   </div>
 
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S4b ·</span> Multi-Component Threat Scoring</p>
+    <div class="prose">
+      <p>The threat score is a <strong>confidence-weighted average</strong> of six independent components:
+      proximity, occupancy count, behavior (motion pattern), vital signs (breathing anomalies from micro-Doppler),
+      air quality (VOC + PM2.5), and noise. Each sensor’s confidence dynamically reduces its weight when data
+      quality is low, so a saturated MQ135 doesn’t skew the result the same way a well-calibrated reading would.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">rasppi.py — ThreatScorer.calculate_overall_threat()</span></div>
+      <pre><code><span class="cm"># Six independent (score, confidence) component tuples</span>
+components_raw = {
+    <span class="str">'count'</span>:       self.calculate_count_threat(len(targets)),
+    <span class="str">'behavior'</span>:    self.calculate_behavior_threat(targets, motion_patterns, events),
+    <span class="str">'vital_signs'</span>: self.calculate_vital_signs_threat(targets, behavior_score),
+    <span class="str">'air_quality'</span>: self.calculate_air_quality_threat(odor_data),
+    <span class="str">'noise'</span>:       self.calculate_noise_threat(sound_data),
+}
+
+<span class="cm"># Low-confidence sensors get proportionally less weight</span>
+adjusted_weights = {}
+<span class="kw">for</span> name, (score, conf) <span class="kw">in</span> components_raw.items():
+    base_w = self.config.COMPONENT_WEIGHTS[name]
+    adjusted_weights[name] = base_w * (conf / <span class="num">0.4</span>) <span class="kw">if</span> conf &lt; <span class="num">0.4</span> <span class="kw">else</span> base_w
+
+<span class="cm"># Normalize so weights still sum to 1.0</span>
+total = sum(adjusted_weights.values())
+adjusted_weights = {k: v / total <span class="kw">for</span> k, v <span class="kw">in</span> adjusted_weights.items()}
+
+<span class="cm"># Weighted sum → overall threat score 0-100</span>
+overall_threat = sum(
+    components_adjusted[n] * adjusted_weights[n] <span class="kw">for</span> n <span class="kw">in</span> components_adjusted
+)
+
+<span class="cm"># Map to labelled threat level</span>
+level = (
+    <span class="str">"LOW"</span>      <span class="kw">if</span> overall_threat &lt; <span class="num">20</span> <span class="kw">else</span>
+    <span class="str">"MODERATE"</span> <span class="kw">if</span> overall_threat &lt; <span class="num">40</span> <span class="kw">else</span>
+    <span class="str">"ELEVATED"</span> <span class="kw">if</span> overall_threat &lt; <span class="num">60</span> <span class="kw">else</span>
+    <span class="str">"HIGH"</span>     <span class="kw">if</span> overall_threat &lt; <span class="num">80</span> <span class="kw">else</span>
+    <span class="str">"CRITICAL"</span>
+)
+</code></pre>
+    </div>
+    <div class="callout">
+      <span class="label">Component weights (base)</span>
+      Behavior 30% &middot; Proximity 15% &middot; Count 15% &middot; Vital Signs 15% &middot; Air Quality 15% &middot; Noise 10%
+      &mdash; dynamically re-normalized when any sensor confidence drops below 0.4.
+    </div>
+  </div>
+
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S3b ·</span> Dashboard</p>
+    <div class="screenshot-frame">
+      <img src="../images/scope/dashboard.png" alt="Dashboard with threat scores">
+      <p class="screenshot-caption">Advanced Monitoring Dashboard — per-room threat scores, temporal trend analysis, and facility quality gauge</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="../images/scope/dashboard2.png" alt="Dashboard with radar plot">
+      <p class="screenshot-caption">Activity Monitor (mmWave radar plot) and Air Quality panel — live target tracking alongside VOC, PM2.5, and odor classification</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="../images/scope/timeline.png" alt="Sensor readings timeline">
+      <p class="screenshot-caption">Sensor readings timeline — real-time charts for threat score, VOC, people count, and noise level</p>
+    </div>
+  </div>
   <!-- SYSTEMD -->
   <div class="content-section">
     <p class="section-heading"><span class="ref">S4 ·</span> System Architecture</p>
@@ -343,8 +479,7 @@ MAX_TARGETS  = <span class="num">3</span>
 </div>
 
 <footer>
-  <p>© 2025 <span class="copper">Ethan Xiong</span> · Electrical Engineering · UWaterloo</p>
-  <p>Rev 1.0</p>
+  <p><span class="copper">Ethan Xiong</span> · Electrical Engineering · UWaterloo</p>
 </footer>
 </body>
 </html>
