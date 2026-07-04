@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RC Transmitter | Ethan Xiong</title>
+<title>Handmade Mechanical Keyboard | Ethan Xiong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
@@ -61,7 +61,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px
 .section-heading{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--copper);margin-bottom:2rem}
 .section-heading::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent)}
 .section-heading .ref{color:var(--silk-faint);font-size:9px}
-.prose{font-size:14px;font-weight:300;color:var(--silk-dim);line-height:1.9;max-width:680px}
+.prose{font-size:14px;font-weight:300;color:var(--silk-dim);line-height:1.9;line-height:1.9}
 .prose p{margin-bottom:1.25rem}
 .prose p:last-child{margin-bottom:0}
 .prose strong{color:var(--silk);font-weight:500}
@@ -86,11 +86,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px
 .info-val{color:var(--silk);text-align:right}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:1.5rem}
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;padding:3px 8px;border-radius:1px;background:var(--fr4-surface);color:var(--silk-dim);border:1px solid var(--border)}
+.img-block{margin:1.5rem 0}
+.img-block img{width:100%;display:block;border:1px solid var(--border2);border-radius:2px}
+.img-caption{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;color:var(--silk-faint);margin-top:8px}
+.img-caption .copper{color:var(--copper)}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;margin-top:4rem}
 footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint)}
 footer .copper{color:var(--copper)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:700px){.spec-bar{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.container{padding:0 1.25rem}nav{padding:0 1.25rem}footer{flex-direction:column;gap:0.5rem;text-align:center}}
+@media(max-width:700px){.spec-bar{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.img-grid{grid-template-columns:1fr}.container{padding:0 1.25rem}nav{padding:0 1.25rem}footer{flex-direction:column;gap:0.5rem;text-align:center}}
 @media(max-width:480px){
   .nav-links{
     display:none;
@@ -115,48 +120,131 @@ footer .copper{color:var(--copper)}
     <h1 class="project-title">Handmade Mechanical Keyboard</h1>
     <p class="project-subtitle">Custom-Built Keyboard w/ Mechanical Switches</p>
     <p class="project-lede">
-      Coming soon...
+      A 65% mechanical keyboard built entirely by hand. Every switch is soldered into a diode matrix on a 3D-printed plate, driven by a Teensy 2.0 running QMK, and closed up in a case I designed and 3D-printed myself.
     </p>
   </div>
 
   <div class="spec-bar">
-    <div class="spec-cell"><p class="spec-label">1</p><p class="spec-value">A</p></div>
-    <div class="spec-cell"><p class="spec-label">2</p><p class="spec-value">B</p></div>
-    <div class="spec-cell"><p class="spec-label">3</p><p class="spec-value">C</p></div>
-    <div class="spec-cell"><p class="spec-label">4</p><p class="spec-value"><span class="copper">D</span></p></div>
+    <div class="spec-cell"><p class="spec-label">Layout</p><p class="spec-value">65%, 68 Keys</p></div>
+    <div class="spec-cell"><p class="spec-label">Switches</p><p class="spec-value">Blue Clicky Switches</p></div>
+    <div class="spec-cell"><p class="spec-label">Controller</p><p class="spec-value">Teensy 2.0 (QMK)</p></div>
+    <div class="spec-cell"><p class="spec-label">Assembly</p><p class="spec-value"><span class="copper">Hand-Wired Matrix</span></p></div>
   </div>
 
   <div class="content-section">
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
     <div class="prose">
       <p>
-        text
+        Most custom keyboards start from a kit containing a premade PCB, a plate, and a case that all bolt together. 
+        I wanted to understand the layer underneath everything, so I built this one from raw switches, 
+        wire, and diodes instead of a board. The result is a 65% layout with 68 mechanical switches, hand-wired into a row-column matrix, 
+        running fully custom QMK firmware, and enclosed in a case I modeled myself on Fusion 360.
       </p>
+      <p>
+        The build breaks down into four stages that mirror how the project actually happened: wiring the matrix, populating the switch plate, 
+        configuring firmware, and designing the enclosure around the finished plate.
+      </p>
+    </div>
+    <div class="img-block">
+      <img src="../images/keyboard/full.jpg" alt="Finished 65% mechanical keyboard with white and blue keycaps"/>
+      <p class="img-caption">Finished build - 65% layout, blue keycap set, hand-wired matrix hidden underneath.</p>
     </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S2 ·</span> Circuit Design</p>
+    <p class="section-heading"><span class="ref">S2 ·</span> Circuit Design — Diode Matrix</p>
     <div class="prose">
       <p>
-        text
+        With no PCB to route the switches, every row and column connection has to exist as an actual wire. 
+        Each switch has a <strong>1N4148 diode</strong> soldered directly to one leg, oriented consistently 
+        across the whole board. This diode was chosen because of its N-Key Rollover which allows keys to be pressed 
+        simultaneously without ghosting, and its low forward voltage drop which keeps the matrix voltage high enough to be read by the Teensy.
       </p>
+      <p>
+        The rows are soldered together switch-to-switch along one leg, and the columns are soldered along the other leg in the 
+        perpendicular direction, so the matrix can be scanned as an <span class="copper">N×M grid</span> instead of needing a 
+        dedicated line per key. I color-coded the wire runs by column so the matrix stayed traceable when something went wrong.
+      </p>
+      <p>
+        All matrix lines terminate at a <strong>Teensy 2.0</strong> mounted in the center of the board, 
+        which handles the row/column scanning and reports keypresses to the host over USB HID.
+      </p>
+    </div>
+    <div class="img-block">
+      <img src="../images/keyboard/wiring.jpg" alt="Hand-wired diode matrix on the switch plate"/>
+      <p class="img-caption">Hand-wired diode matrix - each switch leg carries a 1N4148 diode (200mA), with row/column runs feeding into the Teensy 2.0.</p>
+    </div>
+    <div class="callout">
+      <span class="label">Debugging Note</span>
+      <strong>Cold solder joints</strong> was the single most common failure point in this process. A handful of keys didn't register, which traced back to a couple of wires not having enough soldering.
     </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S3 ·</span> Firmware</p>
+    <p class="section-heading"><span class="ref">S3 ·</span> Switch Plate & Assembly</p>
     <div class="prose">
       <p>
-        text
+        The switches sit in a 3D-printed plate that holds each one rigidly in place before soldering, keeping the whole matrix 
+        aligned while the wiring goes in underneath. I populated the board with <strong>clicky blue switches</strong> throughout, 
+        chosen for tactile and audible feedback over the silent alternatives.
       </p>
+      <p>
+        Populating the plate came before wiring; every switch was clipped into its cutout first, then the matrix was built 
+        switch-by-switch on the underside, which kept the plate itself acting as a wiring jig throughout assembly.
+      </p>
+    </div>
+    <div class="img-block">
+      <img src="../images/keyboard/switch-plate.jpg" alt="Switch plate fully populated with blue mechanical switches"/>
+      <p class="img-caption">Plate fully populated with switches prior to matrix wiring, the plate doubles as an alignment frame during soldering.</p>
     </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S4 ·</span> Enclosure</p>
+    <p class="section-heading"><span class="ref">S4 ·</span> Firmware</p>
+    <div class="prose">
+      <p>
+        The board runs <strong>QMK firmware</strong>, with a custom keymap and matrix definition written to match the exact row/column pinout 
+        used during wiring - since there's no standard PCB to reference, the firmware's matrix layout had to be derived directly from how I 
+        actually ran the wires.
+      </p>
+      <p>
+        QMK's layer system adds a function layer on top of the base 65% layout, covering media controls and arrow-key duplicates 
+        that don't fit on a board this size without added layers. Flashing is done over the Teensy 2.0 through QMK Toolbox.
+      </p>
+    </div>
+    <div class="callout">
+      <span class="label">Debugging Note</span>
+      Firmware bring-up was the fastest feedback loop in the project - a mismatched row/column pin in the QMK <span class="copper">info.json</span> 
+      shows up immediately as a swapped or dead key, which made it easy to cross-reference against the physical matrix and catch wiring mistakes 
+      that weren't obvious from a continuity check alone.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S5 ·</span> Enclosure</p>
+    <div class="prose">
+      <p>
+        The case was modeled from scratch on Fusion 360 to match the plate's exact switch spacing and outer dimensions, with a raised lip 
+        around each switch cutout and an internal cavity sized to clear the diode matrix and Teensy 2.0 underneath. A center 
+        cutout along the spacebar row provides access for the stabilizer wire.
+      </p>
+      <p>
+        It was designed as a single top shell with individual switch openings, 3D-printed to fit the populated plate directly.
+      </p>
+    </div>
+    <div class="img-block">
+      <img src="../images/keyboard/cad.jpg" alt="CAD render of the 3D-printed keyboard case"/>
+      <p class="img-caption">CAD model of the case - switch cutouts and internal clearance modeled directly from the populated plate.</p>
+    </div>
     <div class="tags">
-      <span class="tag">Test</span>
+      <span class="tag">65% Layout</span>
+      <span class="tag">Hand-Wired Matrix</span>
+      <span class="tag">Diode Matrix</span>
+      <span class="tag">QMK Firmware</span>
+      <span class="tag">Teensy 2.0</span>
+      <span class="tag">Mechanical Switches</span>
+      <span class="tag">3D-Printed Case</span>
+      <span class="tag">Fusion 360</span>
     </div>
   </div>
 </div>
