@@ -113,10 +113,10 @@ footer .copper{color:var(--copper)}
   <div class="project-hero">
     <p class="project-refdes">2026</p>
     <h1 class="project-title">RC Drone + Controller Transmitter</h1>
-    <p class="project-subtitle">Handheld 2.4 GHz Radio Controller — Built from Scratch</p>
+    <p class="project-subtitle">Handheld 2.4 GHz Radio Controller and 9x8 cm Drone Built from Scratch</p>
     <p class="project-lede">
-      A fully custom handheld RC transmitter targeting a drone receiver — hardware, firmware,
-      power system, and enclosure designed and built end to end on perfboard.
+      A fully custom handheld RC transmitter and drone including hardware, firmware,
+      power system, and enclosure designed and built end to end on a PCB.
     </p>
   </div>
 
@@ -124,34 +124,45 @@ footer .copper{color:var(--copper)}
     <div class="spec-cell"><p class="spec-label">MCU</p><p class="spec-value">Arduino Nano</p></div>
     <div class="spec-cell"><p class="spec-label">RF</p><p class="spec-value">2.4 GHz NRF24</p></div>
     <div class="spec-cell"><p class="spec-label">IMU</p><p class="spec-value">MPU-6050</p></div>
-    <div class="spec-cell"><p class="spec-label">Build</p><p class="spec-value"><span class="copper">Perfboard</span></p></div>
+    <div class="spec-cell"><p class="spec-label">Build</p><p class="spec-value"><span class="copper">PCB</span></p></div>
   </div>
 
   <div class="content-section">
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
     <div class="prose">
       <p>
-        The goal was a fully functional RC transmitter with no off-the-shelf radio module doing the heavy lifting —
-        just an Arduino Nano, an NRF24L01+LNA transceiver, and hand-written firmware talking SPI.
-        The transmitter handles two analog joystick axes, a rotary encoder for auxiliary control,
-        an MPU-6050 IMU for tilt sensing, and an I²C LCD for live status display.
+        The goal was a fully functional RC transmitter and drone with no off-the-shelf radio module doing the heavy lifting. The transmitter includes 
+        an Arduino Nano, an NRF24L01 transceiver, and hand-written firmware talking SPI.
+        The transmitter includes two joysticks, a rotary encoder, 2 SPDT switches, a SPST power switch, a TP4056 Li-ion charger, 
+        a 3.7v → 5V boost converter, an MPU-6050, an I²C LCD, and finally a 1000mAh 3.7V Li-ion battery.
+      </p>
+      <p>
+        The drone itself is a 9x8 cm quadcopter style drone with an RF-Arduino Nano, an MP-6050, 
+        boost converter, 220mAh 3.7V Li-ion battery, coreless motors, and a custom motor drive board.
+        The motor drive board consists of the SI2300 MOSFET, 1N5819 flyback diode, and a 10kΩ pulldown resistor.
       </p>
     </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S2 ·</span> Power Design — Level Shifting</p>
+    <p class="section-heading"><span class="ref">S2 ·</span> RC Controller Transmitter</p>
     <div class="prose">
       <p>
-        The Arduino Nano runs at <strong>5V logic</strong>. The NRF24L01 and MPU-6050 both run at
-        <strong>3.3V</strong> and are <strong class="copper">not 5V tolerant</strong> on their data lines.
-        Connecting them directly would damage the peripherals. The solution was a
-        <strong>BSS138-based bidirectional logic level shifter</strong> — a MOSFET circuit that
-        translates signals between voltage domains safely in both directions using only passive components.
+        The transmitter is built around an Arduino Nano, which reads the joysticks, switches, 
+        and rotary encoder, and sends the data over SPI to the NRF24L01+LNA transceiver. 
+        The NRF24 module operates with 2.4 GHz and can achieve a range of several hundred meters with the LNA variant. 
+        This setup was inspired by many different YouTube videos but I wanted to make my own PCB and firmware from scratch.
+        I first created the circuit on a breadboard, where I confirmed my wiring and logic worked with a reciever. 
+        After that, I began designing the PCB in KiCAD. My first iteration was merely a proof of concept and lacks any power regulation 
+        aside from the Nano's USB port.
       </p>
       <p>
-        The 3.3V rail is supplied by an <strong>AMS1117-3.3V LDO</strong> from the 5V Arduino supply.
-        The AMS1117 can supply up to 800 mA, comfortably powering the RF module and IMU simultaneously.
+        The second iteration moved off USB power entirely and onto a rechargeable LiPo pack. 
+        A TP4056 module handles charging and a boost converter input so the transmitter can be fully powered down without disconnecting 
+        the battery from the charging circuit. The boost converter steps the LiPo's voltage up to a 
+        stable 5V rail, and I reworked the feedback resistor network on the converter to hit that 
+        target precisely rather than relying on its default output. I also added 2 SPDT switches 
+        on each joystick to allow for more precise input, such as switching between flight modes.
       </p>
     </div>
 
@@ -185,7 +196,30 @@ footer .copper{color:var(--copper)}
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S3 ·</span> Firmware — Packet Structure</p>
+    <p class="section-heading"><span class="ref">S3 ·</span> RC Drone</p>
+    <div class="prose">
+      <p>
+        The drone's flight controller is built around an RF-Nano, an Arduino Nano with an 
+        NRF24L01 integrated directly onto the board which receives control packets from the 
+        transmitter and runs the flight stabilization loop. An MPU6050 communicates over I2C 
+        to provide the pitch, roll, and yaw data the controller needs to keep the aircraft level. 
+        Motor speed is controlled through four SI2300 N-MOSFETs driven by PWM, with 1N5819 flyback 
+        diodes protecting each MOSFET from the inductive kickback of the coreless motors.
+      </p>
+      <p>
+        The firmware is based on the MultiWii-NRF24L01-SingleBoard project, which I adapted for 
+        this hardware layout. In KiCad, I mapped the four motor PWM outputs to D3, D5, D6, and D9, 
+        with the NRF24 CE and CSN lines on D7 and D10, and the MPU6050 on the Nano's hardware I2C 
+        pins (A4/A5). Power comes from a 1S LiHV battery feeding the Nano's VCC directly, while the 
+        NRF24 draws 3.3V from the MPU6050 breakout's onboard LDO rather than a separate regulator. 
+        The airframe pairs 716 coreless motors on an 87×79mm frame, chosen to balance thrust against 
+        the weight of the battery and PCB.
+      </p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S4 ·</span> Firmware — Packet Structure</p>
     <div class="prose">
       <p>
         The transmitter firmware reads all inputs, packs them into a fixed-size struct, and fires it over SPI

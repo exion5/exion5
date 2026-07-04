@@ -644,15 +644,15 @@ a.project:hover .read-more { color: var(--gold); }
           my first stepping stone in becoming an Electrical Engineer.
         </p>
         <p>
-          Since then I've hand-wired a <strong>mechanical keyboard</strong>, built a
-          <strong>Raspberry Pi handheld console</strong>, and designed an
+          Since then I've designed many projects such as creating a <strong>mechanical keyboard</strong>, 
+          <strong>Raspberry Pi handheld console</strong>, and an
           <span class="copper">IEEE Technical Design award-winning</span> environmental monitoring system integrating
           mmWave radar, particulate sensors, and a live web dashboard on a Pi Zero 2W.
         </p>
         <p>
           Most recently I took a full custom PCB from concept to fabrication for my RC Drone project, designing an
           Arduino Nano equivalent with integrated boost converter, LiPo charger, USB bridge,
-          and battery protection in KiCad, fabricated at JLCPCB.
+          and battery protection in KiCad, fabricated with JLCPCB.
         </p>
       </div>
       <div class="component-card">
@@ -707,8 +707,8 @@ a.project:hover .read-more { color: var(--gold); }
           SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
           radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
           the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
-          over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was because the TX and RX pins were 
-          occupied by the PMS5003 particulate sensor on <code>/dev/serial0</code>.
+          over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was due to a hardware UART-pin conflict with the 
+          PMS5003 particulate sensor on <code>/dev/serial0</code>.
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">RPi Zero 2W</span><span class="tag">HLK-LD2450 Radar</span><span class="tag">PMS5003</span><span class="tag">ADS1115 ADC</span><span class="tag">KY-037</span><span class="tag">I²C</span><span class="tag">Software UART</span><span class="tag">Flask</span><span class="tag">pigpio</span></span>
@@ -725,18 +725,18 @@ a.project:hover .read-more { color: var(--gold); }
         <span class="project-refdes">RC Drone & Controller Transmitter</span>
       </div>
       <div class="project-body">
-        <h3 class="project-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
+        <h3 class="project-title">2.4 GHz Radio-Controlled Drone & Transmitter</h3>
         <p class="project-desc">
-          This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
-          It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
-          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
-          logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.
+          This project involved building a handheld RC transmitter and drone.  
+          Both utilize an Arduino Nano as the main brain, and uses NRF24L01 for 2.4 GHz RF. The transmitter utilizes an MPU-6050 for orientation, dual analog joysticks,
+          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. The drone contains an MPU-6050 for stability / orientation, 
+          and uses 716 coreless motors with 55000 RPM. Power delivery is done through a boost converter from a 3.7V LiPo battery. 
         </p>
         <div class="project-hover-hint">
-          <span class="tags"><span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span><span class="tag">PCF8574</span><span class="tag">BSS138 Shifter</span><span class="tag">AMS1117-3.3</span><span class="tag">SPI / I²C</span><span class="tag">Perfboard</span></span>
+          <span class="tags"><span class="tag">Arduino Nano</span><span class="tag">NRF24L01</span><span class="tag">MPU-6050</span><span class="tag">KiCad</span><span class="tag">Motor Drive Board</span><span class="tag">Power Delivery</span><span class="tag">SPI / I²C</span><span class="tag">PCB Design</span></span>
         </div>
         <div class="project-expand">
-          <p>BSS138 bidirectional level shifting between 5V/3.3V domains · Fixed-struct radio packet at 50 Hz · SPI NRF24L01 firmware from scratch · MPU-6050 tilt sensing over I²C · AMS1117 power budget for 115 mA RF TX peak</p>
+          F-Nano (Arduino Nano + onboard NRF24L01) as flight controller · SI2300 N-MOSFET motor drivers with 1N5819 flyback diodes · MPU6050 IMU over I2C for stabilization · MultiWii-based flight firmware · Custom KiCad PWM/motor pin mapping (D3/D5/D6/D9) · 716 coreless motors on an 87×79mm frame · 1S LiHV battery power delivery</p>
           <span class="read-more">Read full deep-dive →</span>
         </div>
       </div>

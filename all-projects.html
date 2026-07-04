@@ -257,7 +257,7 @@ footer .copper{color:var(--copper)}
           <div class="card-content">
             <h3 class="card-title">ATmega328P PCB</h3>
             <ul class="card-bullets">
-              <p class="card-desc">A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+              <p class="card-desc">A full ATMega328P Microcontroller board designed from scratch in KiCad and fabricated at JLCPCB. 
               Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
               ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
               protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
@@ -286,16 +286,17 @@ footer .copper{color:var(--copper)}
       <div class="card-body">
         <div class="card-body-inner">
           <div class="card-content">
-            <h3 class="card-title">Handheld 2.4 GHz Radio-Controlled Transmitter</h3>
+            <h3 class="card-title">2.4 GHz Radio-Controlled Drone & Transmitter</h3>
             <ul class="card-bullets">
-              <p class="card-desc">This project involved building a handheld RC transmitter from scratch targeting a custom drone receiver. 
-              It utilized an Arduino Nano as the main brain, and uses NRF24L01+LNA for 2.4 GHz RF, MPU-6050 IMU for orientation, dual analog joysticks,
-              rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. Power delivery required a BSS138-based
-              logic-level shifter to safely bridge the 5V Arduino and 3.3V peripherals.</p>
+              <p class="card-desc">This project involved building a handheld RC transmitter and drone.  
+              Both utilize an Arduino Nano as the main brain, and uses NRF24L01 for 2.4 GHz RF. The transmitter utilizes an MPU-6050 for orientation, dual analog joysticks,
+              rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. The drone contains an MPU-6050 for stability / orientation, 
+              and uses 716 coreless motors with 55000 RPM. Power delivery is done through a boost converter from a 3.7V LiPo battery. 
+            </p>
             </ul>
             <div class="card-tags">
-              <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
-              <span class="tag">BSS138</span><span class="tag">SPI</span><span class="tag">I²C</span>
+              <span class="tag">Arduino Nano</span><span class="tag">NRF24L01</span><span class="tag">MPU-6050</span>
+              <span class="tag">KiCad</span><span class="tag">SPI</span><span class="tag">I²C</span>
             </div>
           </div>
           <div class="card-image-group"><div class="card-image-placeholder">
