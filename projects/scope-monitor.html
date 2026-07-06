@@ -175,11 +175,11 @@ footer .copper{color:var(--copper)}
     </div>
     <div class="spec-cell">
       <p class="spec-label">RF</p>
-      <p class="spec-value">60 GHz mmWave</p>
+      <p class="spec-value">24 GHz mmWave</p>
     </div>
     <div class="spec-cell">
       <p class="spec-label">Recognition</p>
-      <p class="spec-value"><span class="copper">IEEE Technical Design Award</span></p>
+      <p class="spec-value"><span class="copper">IEEE Technical Award</span></p>
     </div>
   </div>
 
@@ -187,48 +187,59 @@ footer .copper{color:var(--copper)}
   <div class="photo-grid">
     <div class="photo-frame">
       <img src="../images/scope/sensors.jpg" alt="Sensors connected to Raspberry Pi">
-      <p class="photo-caption">Full sensor array — HLK-LD2450 radar, PMS5003, MQ135, and ADS1115 wired to the Pi Zero 2W</p>
+      <p class="photo-caption">Full sensor array - HLK-LD2450 radar, PMS5003, MQ135, and ADS1115 wired to the Pi Zero 2W</p>
     </div>
     <div class="photo-frame">
       <img src="../images/scope/rasppi.jpg" alt="Raspberry Pi Zero 2W">
-      <p class="photo-caption">Raspberry Pi Zero 2W — GPIO header populated, green activity LED lit during boot</p>
+      <p class="photo-caption">Raspberry Pi Zero 2W - GPIO headers populated</p>
     </div>
   </div>
-  <!-- OVERVIEW -->
+
   <div class="content-section">
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
     <div class="prose">
       <p>
         The SCOPE Monitor started off as a problem to tackle improving safety in school washrooms, which are unfortunately common sites for bullying and misconduct.
          The idea was to create a monitoring system that could detect presence, track movement patterns, and monitor environmental conditions without invading privacy.
-         It leverages a Raspberry Pi Zero 2W as the central processing unit, chosen for its compact size, low power consumption, and sufficient processing capabilities to handle multiple sensor inputs and run a web server simultaneously.
+         It uses a Raspberry Pi Zero 2W as the central processing unit, chosen for its compact size, low power consumption, and sufficient processing capabilities to handle multiple sensor inputs and run a web server simultaneously.
       </p>
       <p>
         The system integrates four sensors: an <strong>HLK-LD2450 24 GHz mmWave radar</strong> for presence and motion detection,
-        a <strong>PMS5003</strong> laser particulate sensor for air quality (PM1.0/2.5/10), an <strong>MQ135</strong> gas sensor
-        for CO₂/VOC levels, and a microphone for ambient sound via an <strong>ADS1115 ADC over I²C</strong>.
+        a <strong>PMS5003</strong> particulate sensor for air quality (PM1.0/2.5/10), an <strong>MQ135</strong> gas sensor
+        for CO₂/VOC levels, and a decibel sensor via an <strong>ADS1115 ADC over I²C</strong>.
         All sensor data streams into a Flask web dashboard with live visualization.
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="label">Design Philosophy - D.R.R.</span>
+      The system is structured around three phases: <strong>Detect</strong> unethical or unsafe behavior using the sensor array,
+      <strong>Respond</strong> by computing a real-time confidence-weighted threat score and surfacing alerts, and
+      <strong>Restore</strong> proper washroom etiquette by giving staff the context they need to intervene quickly and consistently.
+    </div>
+
+    <div class="prose">
+      <p>
+        The motivation is straightforward: students often avoid school washrooms altogether due to discomfort, and 
+        administrators consistently ranked vaping and washroom misconduct among their top
+        safety concerns, which are problems that are hard to catch with traditional cameras. SCOPE was built to close that gap without introducing a new
+        privacy problem of its own.
       </p>
     </div>
   </div>
 
 
-  <div class="screenshot-frame">
-    <img src="../images/scope/sensors.png" alt="Sensor readings panel">
-    <p class="screenshot-caption">Activity monitor and live air quality panel — radar targets, VOC (ppm), PM2.5 (mg/m³), and AQI in real time</p>
-  </div>
-
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S1b ·</span> Thread-Safe Data Store</p>
+    <p class="section-heading"><span class="ref">S2 ·</span> Thread-Safe Data Store</p>
     <div class="prose">
-      <p>Sensor data arrives on independent threads — one per sensor — while Flask serves HTTP on a separate thread.
-      A central <strong>LiveDataStore</strong> wraps all mutable state behind a
+      <p>Sensor data arrives on independent threads per sensor, while Flask handles HTTP on a separate thread.
+      A central <strong>LiveDataStore</strong> hides all changing data into a protective container called a
       <code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">threading.Lock</code>,
-      so reads and writes are never interleaved. It also tracks the highest-threat room across four monitored
-      environments so the dashboard always surfaces the most urgent location.</p>
+      so reads and writes are never fragmented. It also tracks the highest-threat room across four monitored
+      environments so the dashboard always displays the most urgent location.</p>
     </div>
     <div class="code-block">
-      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">app.py — LiveDataStore</span></div>
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">app.py - LiveDataStore</span></div>
       <pre><code><span class="kw">class</span> <span class="fn">LiveDataStore</span>:
 
     <span class="kw">def</span> <span class="fn">__init__</span>(self, max_history=<span class="num">100</span>):
@@ -243,7 +254,7 @@ footer .copper{color:var(--copper)}
     <span class="kw">def</span> <span class="fn">update</span>(self, data, environment_id=<span class="kw">None</span>):
         <span class="kw">with</span> self.lock:
             <span class="kw">if</span> environment_id <span class="kw">in</span> self.paused_environments:
-                <span class="kw">return</span>  <span class="cm"># paused room -- drop update</span>
+                <span class="kw">return</span>
             env = self.environments[environment_id]
             env[<span class="str">'data'</span>]        = data.copy()
             env[<span class="str">'threat_score'</span>] = data[<span class="str">'threat'</span>][<span class="str">'overall_threat'</span>]
@@ -258,14 +269,110 @@ footer .copper{color:var(--copper)}
 </code></pre>
     </div>
   </div>
-  <!-- HARDWARE CHALLENGE -->
+
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S2 ·</span> Hardware Challenge — Dual UART</p>
+    <p class="section-heading"><span class="ref">S3 ·</span> Hardware - Sensor Array</p>
+    <div class="prose">
+      <p>
+        Each sensor was chosen deliberately to avoid the two things a washroom monitor can't afford: cameras and
+        microphones that actually record identity or speech. Every sensor in the array measures a physical quantity
+        (motion, particulates, gas concentration) rather than anything physical or conversational.
+      </p>
+    </div>
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">Presence - mmWave Radar</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Part</span><span class="info-val">HLK-LD2450, 24 GHz</span></div>
+          <div class="info-row"><span class="info-key">Range</span><span class="info-val">Up to 3 targets, ~6m</span></div>
+          <div class="info-row"><span class="info-key">Detects</span><span class="info-val">Position, velocity, direction</span></div>
+          <div class="info-row"><span class="info-key">Why radar</span><span class="info-val">Does not capture imagery</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">Noise - Decibel Sensor</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Interface</span><span class="info-val">ADS1115 ADC, I²C</span></div>
+          <div class="info-row"><span class="info-key">Detects</span><span class="info-val">Volume (dB), spike events</span></div>
+          <div class="info-row"><span class="info-key">Won't detect</span><span class="info-val">Speech content, words</span></div>
+          <div class="info-row"><span class="info-key">Why this way</span><span class="info-val">Loudness ≠ eavesdropping</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">Air Quality - Particulate</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Part</span><span class="info-val">PMS5003, laser scattering</span></div>
+          <div class="info-row"><span class="info-key">Detects</span><span class="info-val">PM1.0 / PM2.5 / PM10</span></div>
+          <div class="info-row"><span class="info-key">Use case</span><span class="info-val">Smoke, aerosol, particulates</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">Air Quality - Gas / VOC</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Part</span><span class="info-val">MQ135 gas sensor</span></div>
+          <div class="info-row"><span class="info-key">Detects</span><span class="info-val">VOC / CO₂-equivalent levels</span></div>
+          <div class="info-row"><span class="info-key">Use case</span><span class="info-val">Vaping and chemical odor signatures</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="label">Privacy by design</span>
+      A washroom is one of the few places a school genuinely cannot install a camera or an open microphone. mmWave radar
+      reports coordinates and velocity, not an image meaning there's no biometric data to leak. The sound sensor reports a
+      decibel level, not an audio stream. A shouting match registers as a spike, but the words are never recorded. 
+      Together they let the system flag <em>behavior</em> without ever being able to identify <em>who</em>, which
+      was the non-negotiable constraint the whole design had to work around. These sensors can be used in conjuction with already 
+      in place security cameras outside of washrooms to provide context for staff to intervene without violating privacy.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S4 ·</span> Software - Scenario Simulator</p>
+    <div class="prose">
+      <p>
+        Testing threat detection logic against real washroom incidents obviously isn't practical, so the app includes a
+        built-in <strong>scenario simulator</strong>. It is a Flask route that generates synthetic sensor data matching eight
+        distinct incident profiles, each with its own characteristic VOC, noise, and occupancy signature. This let the
+        threat-scoring algorithm to be tuned and demoed without needing to act anything in an actual washroom.
+      </p>
+    </div>
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">High-Signature Scenarios</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Vaping Detection</span><span class="info-val">↑ VOC, moderate occupancy</span></div>
+          <div class="info-row"><span class="info-key">Chemical Spill</span><span class="info-val">Extreme VOC, evacuation-level</span></div>
+          <div class="info-row"><span class="info-key">Fire / Smoke</span><span class="info-val">↑ PM2.5, critical air quality</span></div>
+          <div class="info-row"><span class="info-key">Bullying Incident</span><span class="info-val">Grouped people, abnormal breathing</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">Motion-Driven Scenarios</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Fighting/Altercation</span><span class="info-val">↑ Noise, rapid movement</span></div>
+          <div class="info-row"><span class="info-key">Crowd Rush/Panic</span><span class="info-val">High occupancy, chaotic motion</span></div>
+          <div class="info-row"><span class="info-key">Medical Emergency</span><span class="info-val">Abnormal breathing, low movement</span></div>
+          <div class="info-row"><span class="info-key">Unauthorized Intrusion</span><span class="info-val">Odd proximity pattern</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <p>
+        Alerts generated from live or simulated data are pushed to the admin dashboard and can also be sent via email,
+        each carrying a timestamp, the triggering sensor, and the specific threat reason. It provides enough context for staff to
+        cross-reference against hallway camera footage and step in with a justified reason rather than a vague
+        ping.
+      </p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S5 ·</span> Hardware Challenge - Dual UART</p>
     <div class="prose">
       <p>
         The Pi Zero 2W only has <strong>one hardware UART</strong> exposed on the GPIO header (<code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">/dev/serial0</code>).
-        The PMS5003 claimed it at 9600 baud. However, the HLK-LD2450 radar also needed UART at
-        <strong class="copper">256,000 baud</strong>, well above standard rates.
+        The PMS5003 uses it at 9600 baud. However, the HLK-LD2450 radar also needed UART at
+        <strong class="copper">256,000 baud</strong>.
       </p>
       <p>
         The solution was manual software UART via <strong>pigpio</strong>, which gives cycle-accurate GPIO timing using the Pi's DMA hardware.
@@ -275,13 +382,13 @@ footer .copper{color:var(--copper)}
 
     <div class="callout">
       <span class="label">Key insight</span>
-      <strong>pigpio's bit-bang UART</strong> uses DMA-driven timing rather than CPU busy-waiting, making it accurate enough for 256 kbaud
+      <strong>pigpio's bit-bang UART</strong> uses DMA-driven timing rather than CPU busy-waiting, making it accurate enough for 256k baud
       without hammering the CPU, which is critical on a low-power Zero 2W running a web server simultaneously.
     </div>
 
     <div class="two-col">
       <div class="info-card">
-        <div class="info-card-header">PMS5003 — Hardware UART</div>
+        <div class="info-card-header">PMS5003 - Hardware UART</div>
         <div class="info-card-body">
           <div class="info-row"><span class="info-key">Interface</span><span class="info-val">/dev/serial0</span></div>
           <div class="info-row"><span class="info-key">Baud</span><span class="info-val">9600</span></div>
@@ -290,7 +397,7 @@ footer .copper{color:var(--copper)}
         </div>
       </div>
       <div class="info-card">
-        <div class="info-card-header">HLK-LD2450 — Software UART</div>
+        <div class="info-card-header">HLK-LD2450 - Software UART</div>
         <div class="info-card-body">
           <div class="info-row"><span class="info-key">Interface</span><span class="info-val">pigpio bit-bang</span></div>
           <div class="info-row"><span class="info-key">Baud</span><span class="info-val">256,000</span></div>
@@ -301,9 +408,8 @@ footer .copper{color:var(--copper)}
     </div>
   </div>
 
-  <!-- FRAME PARSER -->
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S3 ·</span> Radar Frame Parser</p>
+    <p class="section-heading"><span class="ref">S6 ·</span> Radar Frame Parser</p>
     <div class="prose">
       <p>
         The HLK-LD2450 outputs a proprietary binary protocol with no official open-source parser at the time.
@@ -341,8 +447,8 @@ MAX_TARGETS  = <span class="num">3</span>
         <span class="kw">if</span> len(chunk) < TARGET_SIZE:
             <span class="kw">break</span>
 
-        x     = int.from_bytes(chunk[<span class="num">0</span>:<span class="num">2</span>], <span class="str">'little'</span>, signed=<span class="kw">True</span>)
-        y     = int.from_bytes(chunk[<span class="num">2</span>:<span class="num">4</span>], <span class="str">'little'</span>, signed=<span class="kw">True</span>)
+        x = int.from_bytes(chunk[<span class="num">0</span>:<span class="num">2</span>], <span class="str">'little'</span>, signed=<span class="kw">True</span>)
+        y = int.from_bytes(chunk[<span class="num">2</span>:<span class="num">4</span>], <span class="str">'little'</span>, signed=<span class="kw">True</span>)
         speed = int.from_bytes(chunk[<span class="num">4</span>:<span class="num">6</span>], <span class="str">'little'</span>, signed=<span class="kw">True</span>)
 
         <span class="kw">if</span> x == <span class="num">0</span> <span class="kw">and</span> y == <span class="num">0</span>:   <span class="cm"># empty slot</span>
@@ -360,19 +466,19 @@ MAX_TARGETS  = <span class="num">3</span>
 
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S4b ·</span> Multi-Component Threat Scoring</p>
+    <p class="section-heading"><span class="ref">S7 ·</span> Multi-Component Threat Scoring</p>
     <div class="prose">
       <p>The threat score is a <strong>confidence-weighted average</strong> of six independent components:
-      proximity, occupancy count, behavior (motion pattern), vital signs (breathing anomalies from micro-Doppler),
-      air quality (VOC + PM2.5), and noise. Each sensor’s confidence dynamically reduces its weight when data
+      proximity, occupancy count, motion patterns (behaviour), vital signs, 
+      air quality, and noise. Each sensor’s confidence dynamically reduces its weight when data
       quality is low, so a saturated MQ135 doesn’t skew the result the same way a well-calibrated reading would.</p>
     </div>
     <div class="code-block">
-      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">rasppi.py — ThreatScorer.calculate_overall_threat()</span></div>
+      <div class="code-header"><span class="code-lang">Python</span><span class="code-file">rasppi.py - ThreatScorer.calculate_overall_threat()</span></div>
       <pre><code><span class="cm"># Six independent (score, confidence) component tuples</span>
 components_raw = {
     <span class="str">'count'</span>:       self.calculate_count_threat(len(targets)),
-    <span class="str">'behavior'</span>:    self.calculate_behavior_threat(targets, motion_patterns, events),
+    <span class="str">'behaviour'</span>:    self.calculate_behaviour_threat(targets, motion_patterns, events),
     <span class="str">'vital_signs'</span>: self.calculate_vital_signs_threat(targets, behavior_score),
     <span class="str">'air_quality'</span>: self.calculate_air_quality_threat(odor_data),
     <span class="str">'noise'</span>:       self.calculate_noise_threat(sound_data),
@@ -405,41 +511,51 @@ level = (
     </div>
     <div class="callout">
       <span class="label">Component weights (base)</span>
-      Behavior 30% &middot; Proximity 15% &middot; Count 15% &middot; Vital Signs 15% &middot; Air Quality 15% &middot; Noise 10%
-      &mdash; dynamically re-normalized when any sensor confidence drops below 0.4.
+      Behavior 30% &middot; Proximity 15% &middot; Count 15% &middot; Vital Signs 15% &middot; Air Quality 15% &middot; Noise 10% - 
+      dynamically re-normalized when any sensor confidence drops below 0.4.
     </div>
   </div>
 
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S3b ·</span> Dashboard</p>
-    <div class="screenshot-frame">
-      <img src="../images/scope/dashboard.png" alt="Dashboard with threat scores">
-      <p class="screenshot-caption">Advanced Monitoring Dashboard — per-room threat scores, temporal trend analysis, and facility quality gauge</p>
+    <p class="section-heading"><span class="ref">S8 ·</span> Dashboard</p>
+    <div class="prose">
+      <p>
+        The dashboard is split across a few views: a top-level per-room threat overview, a live sensors page for
+        moment-to-moment readings, an extended breakdown of each threat component, and a settings page for tuning
+        alert thresholds without touching code.
+      </p>
     </div>
     <div class="screenshot-frame">
-      <img src="../images/scope/dashboard2.png" alt="Dashboard with radar plot">
-      <p class="screenshot-caption">Activity Monitor (mmWave radar plot) and Air Quality panel — live target tracking alongside VOC, PM2.5, and odor classification</p>
+      <img src="../images/scope/dashboard.png" alt="Dashboard with per-room threat scores">
+      <p class="screenshot-caption">Advanced Monitoring Dashboard - per-room threat scores across four monitored washrooms, overall threat gauge, and facility quality index</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="../images/scope/sensors.png" alt="Sensors page with live radar and air quality readings">
+      <p class="screenshot-caption">Sensors page - live target tracking via the mmWave radar's polar plot, average proximity, abnormal breathing count, and real-time air quality gauges</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="../images/scope/dashboard2.png" alt="Extended threat component breakdown">
+      <p class="screenshot-caption">Extended sensor breakdown - activity monitor with per-person tracking, air quality analysis, acoustic monitoring, and the six individual threat component scores</p>
     </div>
     <div class="screenshot-frame">
       <img src="../images/scope/timeline.png" alt="Sensor readings timeline">
-      <p class="screenshot-caption">Sensor readings timeline — real-time charts for threat score, VOC, people count, and noise level</p>
+      <p class="screenshot-caption">Sensor readings timeline - real-time charts for threat score history, VOC level, people count, and noise level</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="../images/scope/settings.png" alt="System settings page">
+      <p class="screenshot-caption">System Settings - configurable alert thresholds for threat levels, air quality, and sound spikes, plus dashboard refresh rate and history retention</p>
     </div>
   </div>
-  <!-- SYSTEMD -->
+
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S4 ·</span> System Architecture</p>
+    <p class="section-heading"><span class="ref">S9 ·</span> System Architecture</p>
     <div class="prose">
       <p>
         The full stack runs as a <strong>systemd service</strong> that auto-starts on boot, restarts on failure,
-        and logs to journald. The Flask server runs on the local network, serving a dashboard with
+        and logs to journald. The Flask server runs on the local network, creating a dashboard with
         live-updating charts for particulate levels, air quality index, sound level in dB, and a
         2D radar plot showing tracked target positions in real time.
-      </p>
-      <p>
-        One subtle bug: NumPy integers returned from sensor calculations aren't JSON-serializable by default.
-        A custom <strong>JSONEncoder subclass</strong> was needed to cast <code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">numpy.int64</code> to native Python
-        <code style="font-family:var(--mono);font-size:12px;background:var(--fr4-surface);border:1px solid var(--border2);color:var(--gold);padding:1px 5px;border-radius:1px">int</code> before serialization — a small but production-breaking issue.
       </p>
     </div>
 
@@ -468,7 +584,7 @@ level = (
 
   <!-- TAGS -->
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S5 ·</span> Full Stack</p>
+    <p class="section-heading"><span class="ref">S10 ·</span> Full Stack</p>
     <div class="tags">
       <span class="tag">Raspberry Pi Zero 2W</span><span class="tag">HLK-LD2450 mmWave</span>
       <span class="tag">PMS5003</span><span class="tag">MQ135</span><span class="tag">ADS1115 ADC</span>
