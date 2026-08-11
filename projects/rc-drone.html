@@ -86,6 +86,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2.5rem;height:54px
 .info-val{color:var(--silk);text-align:right}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:1.5rem}
 .tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;padding:3px 8px;border-radius:1px;background:var(--fr4-surface);color:var(--silk-dim);border:1px solid var(--border)}
+.img-placeholder{position:relative;background:var(--fr4-mid);border:1px dashed var(--border3);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--silk-faint);overflow:hidden}
+.img-placeholder::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(200,130,26,0.05) 0px,rgba(200,130,26,0.05) 1px,transparent 1px,transparent 12px)}
+.img-placeholder svg{width:28px;height:28px;stroke:var(--copper-dim);position:relative;z-index:1}
+.img-placeholder .ph-label{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--silk-faint);position:relative;z-index:1}
+.img-placeholder .ph-sub{font-family:var(--mono);font-size:9px;color:var(--silk-faint);opacity:0.6;position:relative;z-index:1}
+.img-hero{height:340px;margin:2.5rem 0}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1.5rem 0}
+.img-grid .img-placeholder{height:230px}
+@media(max-width:700px){.img-grid{grid-template-columns:1fr}.img-hero{height:220px}}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;margin-top:4rem}
 footer p{font-family:var(--mono);font-size:11px;color:var(--silk-faint)}
 footer .copper{color:var(--copper)}
@@ -111,7 +120,7 @@ footer .copper{color:var(--copper)}
 
 <div class="container">
   <div class="project-hero">
-    <p class="project-refdes">2026</p>
+    <p class="project-refdes">May 2026 - August 2026</p>
     <h1 class="project-title">RC Drone & Transmitter</h1>
     <p class="project-subtitle">Handheld 2.4 GHz Radio Controller and 9x8 cm Drone Built from Scratch</p>
     <p class="project-lede">
@@ -127,18 +136,28 @@ footer .copper{color:var(--copper)}
     <div class="spec-cell"><p class="spec-label">Build</p><p class="spec-value"><span class="copper">PCB</span></p></div>
   </div>
 
+  <div class="img-placeholder img-hero"> 
+    <img src="../images/drone/full.jpg" 
+         alt="Transmitter and drone together" 
+         width="1600" 
+         height="900" 
+         loading="lazy" 
+         style="width: 100%; height: 100%; object-fit: cover; object-position: center 35%;">
+  </div>
+
   <div class="content-section">
     <p class="section-heading"><span class="ref">S1 ·</span> Overview</p>
     <div class="prose">
       <p>
-        The goal was a fully functional RC transmitter and drone with no off-the-shelf radio module doing the heavy lifting. The transmitter includes 
-        an Arduino Nano, an NRF24L01 transceiver, and hand-written firmware talking SPI.
-        The transmitter includes two joysticks, a rotary encoder, 2 SPDT switches, a SPST power switch, a TP4056 Li-ion charger, 
-        a 3.7v → 5V boost converter, an MPU-6050, an I²C LCD, and finally a 1000mAh 3.7V Li-ion battery.
+        The goal was to create a fully functional RC transmitter and drone. By designing and building the system myself, 
+        I would have greater control over its design and functionality, making it easier to modify, adjust, and improve 
+        the system as needed. The transmitter includes an Arduino Nano, an NRF24L01 transceiver (an RF-Nano also works here), using custom SPI firmware.
+        The transmitter includes two joysticks, a rotary encoder, 2 SPDT switches, a SPST power switch, a TP4056 Li-Po charger, 
+        a 3.7V to 5V boost converter, an MPU6050, an I²C LCD, and finally a 1000mAh 1S Li-Po battery.
       </p>
       <p>
-        The drone itself is a 9x8 cm quadcopter style drone with an RF-Arduino Nano, an MP-6050, 
-        boost converter, 220mAh 3.7V Li-ion battery, coreless motors, and a custom motor drive board.
+        The drone itself is a 9x8 cm quadcopter style drone with an RF-Arduino Nano, an MPU6050, 
+        a boost converter, a 380mAh 1S 25C Li-Po battery, 4 716 55000 RPM coreless motors, and a custom motor drive board.
         The motor drive board consists of the SI2300 MOSFET, 1N5819 flyback diode, and a 10kΩ pulldown resistor.
       </p>
     </div>
@@ -149,48 +168,29 @@ footer .copper{color:var(--copper)}
     <div class="prose">
       <p>
         The transmitter is built around an Arduino Nano, which reads the joysticks, switches, 
-        and rotary encoder, and sends the data over SPI to the NRF24L01+LNA transceiver. 
-        The NRF24 module operates with 2.4 GHz and can achieve a range of several hundred meters with the LNA variant. 
+        and rotary encoder, and sends the data over SPI to the NRF24L01 transceiver. 
         This setup was inspired by many different YouTube videos but I wanted to make my own PCB and firmware from scratch.
-        I first created the circuit on a breadboard, where I confirmed my wiring and logic worked with a reciever. 
-        After that, I began designing the PCB in KiCAD. My first iteration was merely a proof of concept and lacks any power regulation 
-        aside from the Nano's USB port.
-      </p>
-      <p>
-        The second iteration moved off USB power entirely and onto a rechargeable LiPo pack. 
+        I first created the circuit on a breadboard, where I confirmed my wiring and logic worked. 
+        After that, I began designing the PCB in KiCAD. In my PCB, I moved off USB power entirely and onto a rechargeable LiPo pack. 
         A TP4056 module handles charging and a boost converter input so the transmitter can be fully powered down without disconnecting 
-        the battery from the charging circuit. The boost converter steps the LiPo's voltage up to a 
-        stable 5V rail, and I reworked the feedback resistor network on the converter to hit that 
-        target precisely rather than relying on its default output. I also added 2 SPDT switches 
-        on each joystick to allow for more precise input, such as switching between flight modes.
+        the battery from the charging circuit. The boost converter steps the LiPo's 3.7V up to a 
+        stable 5V rail. I also added 2 SPDT switches on each joystick to allow for more precise input, 
+        such as switching between flight modes.
       </p>
     </div>
 
-    <div class="callout">
-      <span class="label">Design note</span>
-      The NRF24L01+LNA variant has a built-in low-noise amplifier and PA stage, boosting range significantly
-      over the standard module — but it draws more current (~115 mA TX peak), which is why the LDO
-      selection mattered. The AMS1117's 800 mA headroom handles it without issue.
-    </div>
-
-    <div class="two-col">
-      <div class="info-card">
-        <div class="info-card-header">Power Rail — 3.3V</div>
-        <div class="info-card-body">
-          <div class="info-row"><span class="info-key">Regulator</span><span class="info-val">AMS1117-3.3V LDO</span></div>
-          <div class="info-row"><span class="info-key">Max current</span><span class="info-val">800 mA</span></div>
-          <div class="info-row"><span class="info-key">Loads</span><span class="info-val">NRF24, MPU-6050, LCD</span></div>
-          <div class="info-row"><span class="info-key">Shifter</span><span class="info-val">BSS138 MOSFET</span></div>
-        </div>
+    <div class="img-grid">
+      <div class="img-placeholder img-hero"
+          style="width: 100%; aspect-ratio: 1200 / 800; overflow: hidden;">
+        <img src="../images/drone/tx_breadboard.jpeg"
+            alt="Transmitter Test Breadboard"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
       </div>
-      <div class="info-card">
-        <div class="info-card-header">NRF24L01+LNA</div>
-        <div class="info-card-body">
-          <div class="info-row"><span class="info-key">Frequency</span><span class="info-val">2.4 GHz ISM</span></div>
-          <div class="info-row"><span class="info-key">Interface</span><span class="info-val">SPI (10 MHz max)</span></div>
-          <div class="info-row"><span class="info-key">TX current</span><span class="info-val">~115 mA peak</span></div>
-          <div class="info-row"><span class="info-key">Supply</span><span class="info-val">1.9–3.6V</span></div>
-        </div>
+      <div class="img-placeholder img-hero"
+          style="width: 100%; aspect-ratio: 1200 / 800; overflow: hidden;">
+        <img src="../images/drone/transmitter.jpeg"
+            alt="Transmitter"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
       </div>
     </div>
   </div>
@@ -201,25 +201,111 @@ footer .copper{color:var(--copper)}
       <p>
         The drone's flight controller is built around an RF-Nano, an Arduino Nano with an 
         NRF24L01 integrated directly onto the board which receives control packets from the 
-        transmitter and runs the flight stabilization loop. An MPU6050 communicates over I2C 
-        to provide the pitch, roll, and yaw data the controller needs to keep the aircraft level. 
-        Motor speed is controlled through four SI2300 N-MOSFETs driven by PWM, with 1N5819 flyback 
-        diodes protecting each MOSFET from the inductive kickback of the coreless motors.
+        transmitter and runs the flight loop. An MPU6050 communicates over I2C 
+        to provide the pitch, roll, throttle, and yaw data to the drone. 
+        Motor speed is controlled through four SI2300 N-MOSFETs driven by PWM (pins 3, 5, 6, 9), with 1N5819 flyback 
+        diodes protecting each MOSFET from the kickback of the coreless motors.
       </p>
       <p>
-        The firmware is based on the MultiWii-NRF24L01-SingleBoard project, which I adapted for 
+        The firmware is based on the MultiWii-NRF24L01, which I adapted for 
         this hardware layout. In KiCad, I mapped the four motor PWM outputs to D3, D5, D6, and D9, 
-        with the NRF24 CE and CSN lines on D7 and D10, and the MPU6050 on the Nano's hardware I2C 
-        pins (A4/A5). Power comes from a 1S LiHV battery feeding the Nano's VCC directly, while the 
-        NRF24 draws 3.3V from the MPU6050 breakout's onboard LDO rather than a separate regulator. 
-        The airframe pairs 716 coreless motors on an 87×79mm frame, chosen to balance thrust against 
-        the weight of the battery and PCB.
+        with the NRF24 CE and CSN lines on D7 and D8, and the MPU6050 on the Nano's hardware I2C 
+        pins (A4/A5). Power comes from a 1S Li-Po battery that goes into a boost converter, feeding the Nano's 5V directly. 
+        The frame pairs 716 coreless motors on an 87×79mm frame, chosen to balance thrust against 
+        the center of gravity of the drone.
       </p>
+    </div>
+
+    <div class="img-grid">
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1200 / 800; overflow: hidden;">
+        <img src="../images/drone/drone_frame.jpg"
+            alt="Drone Frame + Motor Drive Board"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1200 / 800; overflow: hidden;">
+        <img src="../images/drone/drone.jpg"
+            alt="Drone"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
     </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S4 ·</span> Firmware — Packet Structure</p>
+    <p class="section-heading"><span class="ref">S4 ·</span> PCB Design — KiCad</p>
+    <div class="prose">
+      <p>
+        The boards were laid out in KiCad, I used my breadboard prototypes as a starting point to transfer them into schematics, 
+        working through footprint assignment, routing, and DRC/ERC before sending Gerbers to JLCPCB. The transmitter
+        board added the LiPo charge/boost circuit and SPDT/SPST switch wiring that was missing from the initial design. The drone board is a single
+        compact layout carrying the RF-Nano, MPU6050 breakout, the four SI2300 motor driver
+        stages with flyback diodes, along with some decoupling capacitors, kept as small and light as possible for the 87×79mm frame.
+      </p>
+    </div>
+
+    <div class="img-grid">
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/transmitter_sch.png"
+            alt="Transmitter Schematic"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/drone_sch.png"
+            alt="Drone Schematic"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+    </div>
+
+    <div class="img-grid">
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/transmitter_pcb.png"
+            alt="Transmitter PCB Layout"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+      <div class="img-placeholder"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/drone_pcb.png"
+            alt="Drone PCB Layout"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">Transmitter Board</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Layers</span><span class="info-val">2-layer</span></div>
+          <div class="info-row"><span class="info-key">Fab</span><span class="info-val">JLCPCB</span></div>
+          <div class="info-row"><span class="info-key">Size</span><span class="info-val">150x90mm</span></div>
+          <div class="info-row"><span class="info-key">Connectors</span><span class="info-val">JST-PH battery, I²C LCD header</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">Drone Board</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Layers</span><span class="info-val">4-layer</span></div>
+          <div class="info-row"><span class="info-key">Fab</span><span class="info-val">JLCPCB</span></div>
+          <div class="info-row"><span class="info-key">Size</span><span class="info-val">87×79mm, X-frame mount</span></div>
+          <div class="info-row"><span class="info-key">Gate traces</span><span class="info-val">Short, wide, low-inductance</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">Design note</span>
+      Both boards went through several DRC/ERC cleanup passes before ordering, mostly footprint
+      courtyard overlaps around the MOSFETs and clearance violations near the battery connector
+      pads, which is a good reminder to run DRC early and often rather than only right before
+      exporting Gerbers.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S5 ·</span> Firmware — Packet Structure</p>
     <div class="prose">
       <p>
         The transmitter firmware reads all inputs, packs them into a fixed-size struct, and fires it over SPI
@@ -264,15 +350,111 @@ RF24 radio(<span class="num">9</span>, <span class="num">10</span>);   <span cla
   delay(<span class="num">20</span>);   <span class="cm">// 50 Hz</span>
 }</code></pre>
     </div>
+
+    <p class="prose" style="margin-top:1.5rem">
+      On the drone side, the RF-Nano receives the same struct and maps each field directly into
+      MultiWii's <span class="copper">rcData[]</span> array, so the packet is treated exactly like
+      a normal RC receiver's channel data by the rest of the stabilization loop.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">C++</span>
+        <span class="code-file">RX_NRF24.cpp</span>
+      </div>
+      <pre><code><span class="cm">// Received into rcData[] each loop — MultiWii treats this like any other RX</span>
+<span class="kw">void</span> <span class="fn">readNRF24</span>() {
+  <span class="kw">if</span> (radio.available()) {
+    radio.read(&pkt, <span class="kw">sizeof</span>(pkt));
+    lastPacketTime = millis();   <span class="cm">// failsafe timestamp</span>
+
+    rcData[THROTTLE] = pkt.throttle + <span class="num">1500</span>;
+    rcData[YAW]       = pkt.yaw      + <span class="num">1500</span>;
+    rcData[PITCH]     = pkt.pitch    + <span class="num">1500</span>;
+    rcData[ROLL]       = pkt.roll     + <span class="num">1500</span>;
+    rcData[AUX1]       = (pkt.flags & <span class="num">0x01</span>) ? <span class="num">1900</span> : <span class="num">1100</span>;  <span class="cm">// arm</span>
+  }
+
+  <span class="kw">if</span> (millis() - lastPacketTime > <span class="num">500</span>) {
+    failsafeTriggered = <span class="kw">true</span>;   <span class="cm">// cut motors, disarm</span>
+  }
+}</code></pre>
+    </div>
   </div>
 
   <div class="content-section">
-    <p class="section-heading"><span class="ref">S4 ·</span> Full Stack</p>
+    <p class="section-heading"><span class="ref">S6 ·</span> MultiWii GUI Configuration</p>
+    <div class="prose">
+      <p>
+        Rather than hand-tuning PIDs blind, I used the MultiWii GUI (the Processing-based config app)
+        over USB to watch live sensor data, tune the PID tab, and set up the receiver and motor
+        mapping before ever powering the motors on the frame.
+      </p>
+      <p>
+        The <span class="copper">Motors tab</span> was used first, with props off, to verify each
+        of the four outputs spun the correct motor in the correct direction before touching PIDs — 
+        this is where I caught the CW/CCW motor pair imbalance that took a while to trace back to
+        an X-frame mixing table mismatch. The <span class="copper">Sensors tab</span> confirmed the
+        MPU6050's inverted mount was correctly sign-corrected by watching the roll/pitch graphs
+        respond the right direction as I tilted the frame by hand. Once those checked out, I moved
+        to the <span class="copper">PID tab</span> and started from MultiWii's default X-frame gains,
+        nudging Roll/Pitch P up in small steps until the frame held level with light hand oscillation
+        and backed off at the first sign of oscillation.
+      </p>
+    </div>
+
+    <div class="img-grid">
+      <div class="img-placeholder img-hero"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/multiwii.png"
+            alt="MultiWii GUI - Motors / Sensors"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+      <div class="img-placeholder img-hero"
+          style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
+        <img src="../images/drone/placeholder.jpeg"
+            alt="code or multiwii gui stuff"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-card">
+        <div class="info-card-header">Receiver Config</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">RX type</span><span class="info-val">STANDARD_RX (spoofed)</span></div>
+          <div class="info-row"><span class="info-key">Channel order</span><span class="info-val">AETR</span></div>
+          <div class="info-row"><span class="info-key">Arm method</span><span class="info-val">AUX1 = 2000 and Throttle = 1000</span></div>
+          <div class="info-row"><span class="info-key">Failsafe</span><span class="info-val">500 ms timeout</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-header">PID — X-Frame</div>
+        <div class="info-card-body">
+          <div class="info-row"><span class="info-key">Roll / Pitch P</span><span class="info-val">4.0</span></div>
+          <div class="info-row"><span class="info-key">Roll / Pitch I</span><span class="info-val">0.030</span></div>
+          <div class="info-row"><span class="info-key">Roll / Pitch D</span><span class="info-val">23</span></div>
+          <div class="info-row"><span class="info-key">Yaw P</span><span class="info-val">4.5</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">Debug note</span>
+      The GUI's real-time graphs on the Sensors tab were what made the upside-down IMU sign errors
+      obvious — the raw accelerometer traces flipped the wrong direction under tilt, which pointed
+      straight to the aRoll/aPitch sign correction rather than a wiring fault.
+    </div>
+  </div>
+
+  <div class="content-section">
+    <p class="section-heading"><span class="ref">S7 ·</span> Full Stack</p>
     <div class="tags">
       <span class="tag">Arduino Nano</span><span class="tag">NRF24L01+LNA</span><span class="tag">MPU-6050</span>
       <span class="tag">PCF8574 I²C LCD</span><span class="tag">BSS138 Level Shifter</span>
       <span class="tag">AMS1117-3.3V</span><span class="tag">SPI</span><span class="tag">I²C</span>
       <span class="tag">Perfboard</span><span class="tag">C++ / Arduino</span><span class="tag">RF Protocol Design</span>
+      <span class="tag">MultiWii</span><span class="tag">PID Tuning</span><span class="tag">RF-Nano</span><span class="tag">SI2300 MOSFET</span><span class="tag">KiCad</span>
     </div>
   </div>
 </div>
