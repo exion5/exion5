@@ -294,14 +294,6 @@ footer .copper{color:var(--copper)}
         </div>
       </div>
     </div>
-
-    <div class="callout">
-      <span class="label">Design note</span>
-      Both boards went through several DRC/ERC cleanup passes before ordering, mostly footprint
-      courtyard overlaps around the MOSFETs and clearance violations near the battery connector
-      pads, which is a good reminder to run DRC early and often rather than only right before
-      exporting Gerbers.
-    </div>
   </div>
 
   <div class="content-section">
@@ -320,35 +312,26 @@ footer .copper{color:var(--copper)}
         <span class="code-file">transmitter.ino</span>
       </div>
       <pre><code><span class="cm">// Radio packet — matched exactly on receiver side</span>
-<span class="kw">struct</span> RadioPacket {
-  int16_t  throttle;    <span class="cm">// joystick Y1  (-512 to 511)</span>
-  int16_t  yaw;         <span class="cm">// joystick X1</span>
-  int16_t  pitch;       <span class="cm">// joystick Y2</span>
-  int16_t  roll;        <span class="cm">// joystick X2</span>
-  int16_t  tilt_x;      <span class="cm">// MPU-6050 accel X</span>
-  int16_t  tilt_y;      <span class="cm">// MPU-6050 accel Y</span>
-  uint8_t  aux;         <span class="cm">// rotary encoder position</span>
-  uint8_t  flags;       <span class="cm">// bit 0 = arm, bit 1 = mode</span>
+<span class="kw">struct</span> __attribute__((packed)) RF24Data {
+  uint8_t  x1; <!--<span class="cm">// text</span>-->
+  uint8_t  y1;
+  uint8_t  x2;
+  uint8_t  y2;
+  uint8_t  btn1;
+  uint8_t  btn2;
+  int16_t  posEnc;
+  uint8_t  btnEnc;
+  int16_t  accelX;
+  int16_t  accelY;
+  int16_t  accelZ;
+  int16_t  gyroX;
+  int16_t  gyroY;
+  int16_t  gyroZ;
+  uint8_t  sw1;
+  uint8_t  sw2;
+  uint8_t  _pad2[9];
 };
-
-RadioPacket pkt;
-RF24 radio(<span class="num">9</span>, <span class="num">10</span>);   <span class="cm">// CE, CSN pins</span>
-
-<span class="kw">void</span> <span class="fn">loop</span>() {
-  pkt.throttle = analogRead(A0) - <span class="num">512</span>;
-  pkt.yaw      = analogRead(A1) - <span class="num">512</span>;
-  pkt.pitch    = analogRead(A2) - <span class="num">512</span>;
-  pkt.roll     = analogRead(A3) - <span class="num">512</span>;
-
-  <span class="cm">// Read IMU over I2C</span>
-  readMPU6050(pkt.tilt_x, pkt.tilt_y);
-
-  pkt.aux   = encoder.read();
-  pkt.flags = (armSwitch ? <span class="num">0x01</span> : <span class="num">0x00</span>);
-
-  radio.write(&pkt, <span class="kw">sizeof</span>(pkt));
-  delay(<span class="num">20</span>);   <span class="cm">// 50 Hz</span>
-}</code></pre>
+</code></pre>
     </div>
 
     <p class="prose" style="margin-top:1.5rem">
@@ -356,50 +339,20 @@ RF24 radio(<span class="num">9</span>, <span class="num">10</span>);   <span cla
       MultiWii's <span class="copper">rcData[]</span> array, so the packet is treated exactly like
       a normal RC receiver's channel data by the rest of the stabilization loop.
     </p>
-
-    <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">C++</span>
-        <span class="code-file">RX_NRF24.cpp</span>
-      </div>
-      <pre><code><span class="cm">// Received into rcData[] each loop — MultiWii treats this like any other RX</span>
-<span class="kw">void</span> <span class="fn">readNRF24</span>() {
-  <span class="kw">if</span> (radio.available()) {
-    radio.read(&pkt, <span class="kw">sizeof</span>(pkt));
-    lastPacketTime = millis();   <span class="cm">// failsafe timestamp</span>
-
-    rcData[THROTTLE] = pkt.throttle + <span class="num">1500</span>;
-    rcData[YAW]       = pkt.yaw      + <span class="num">1500</span>;
-    rcData[PITCH]     = pkt.pitch    + <span class="num">1500</span>;
-    rcData[ROLL]       = pkt.roll     + <span class="num">1500</span>;
-    rcData[AUX1]       = (pkt.flags & <span class="num">0x01</span>) ? <span class="num">1900</span> : <span class="num">1100</span>;  <span class="cm">// arm</span>
-  }
-
-  <span class="kw">if</span> (millis() - lastPacketTime > <span class="num">500</span>) {
-    failsafeTriggered = <span class="kw">true</span>;   <span class="cm">// cut motors, disarm</span>
-  }
-}</code></pre>
-    </div>
   </div>
 
   <div class="content-section">
     <p class="section-heading"><span class="ref">S6 ·</span> MultiWii GUI Configuration</p>
     <div class="prose">
       <p>
-        Rather than hand-tuning PIDs blind, I used the MultiWii GUI (the Processing-based config app)
-        over USB to watch live sensor data, tune the PID tab, and set up the receiver and motor
-        mapping before ever powering the motors on the frame.
-      </p>
-      <p>
-        The <span class="copper">Motors tab</span> was used first, with props off, to verify each
-        of the four outputs spun the correct motor in the correct direction before touching PIDs — 
-        this is where I caught the CW/CCW motor pair imbalance that took a while to trace back to
-        an X-frame mixing table mismatch. The <span class="copper">Sensors tab</span> confirmed the
-        MPU6050's inverted mount was correctly sign-corrected by watching the roll/pitch graphs
-        respond the right direction as I tilted the frame by hand. Once those checked out, I moved
-        to the <span class="copper">PID tab</span> and started from MultiWii's default X-frame gains,
-        nudging Roll/Pitch P up in small steps until the frame held level with light hand oscillation
-        and backed off at the first sign of oscillation.
+        Rather than hand-tuning PIDs blind, I used the MultiWii GUI 
+        over USB to watch live sensor data and motor outputs while adjusting PID values. 
+        Since my MPU6050 was mounted upside down, I had to remap the 
+        <code>ACC_ORIENTATION</code> / <code>GYRO_ORIENTATION</code> macros in 
+        <code>Sensors.cpp</code> to correct the inverted axes, then tuned P, D, and I in that 
+        order to get a stable response. Arming the drone required two actions, turning the left SPDT switch 
+        to the left and holding the right joystick down to minimize the throttle. Once released, the motors would start spinning. 
+        Disarming was the opposite, moving the SPDT switch off the left side and moving the right joystick down again.
       </p>
     </div>
 
@@ -412,38 +365,10 @@ RF24 radio(<span class="num">9</span>, <span class="num">10</span>);   <span cla
       </div>
       <div class="img-placeholder img-hero"
           style="width: 100%; aspect-ratio: 1400 / 900; overflow: hidden;">
-        <img src="../images/drone/placeholder.jpeg"
-            alt="code or multiwii gui stuff"
-            style="width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+        <img src="../images/drone/code.png"
+            alt="Setting the peripheral values"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: left 50%;">
       </div>
-    </div>
-
-    <div class="two-col">
-      <div class="info-card">
-        <div class="info-card-header">Receiver Config</div>
-        <div class="info-card-body">
-          <div class="info-row"><span class="info-key">RX type</span><span class="info-val">STANDARD_RX (spoofed)</span></div>
-          <div class="info-row"><span class="info-key">Channel order</span><span class="info-val">AETR</span></div>
-          <div class="info-row"><span class="info-key">Arm method</span><span class="info-val">AUX1 = 2000 and Throttle = 1000</span></div>
-          <div class="info-row"><span class="info-key">Failsafe</span><span class="info-val">500 ms timeout</span></div>
-        </div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-header">PID — X-Frame</div>
-        <div class="info-card-body">
-          <div class="info-row"><span class="info-key">Roll / Pitch P</span><span class="info-val">4.0</span></div>
-          <div class="info-row"><span class="info-key">Roll / Pitch I</span><span class="info-val">0.030</span></div>
-          <div class="info-row"><span class="info-key">Roll / Pitch D</span><span class="info-val">23</span></div>
-          <div class="info-row"><span class="info-key">Yaw P</span><span class="info-val">4.5</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout">
-      <span class="label">Debug note</span>
-      The GUI's real-time graphs on the Sensors tab were what made the upside-down IMU sign errors
-      obvious — the raw accelerometer traces flipped the wrong direction under tilt, which pointed
-      straight to the aRoll/aPitch sign correction rather than a wiring fault.
     </div>
   </div>
 

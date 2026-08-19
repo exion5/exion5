@@ -330,17 +330,24 @@ section { padding: 6rem 0; }
 
 /* PROJECTS */
 .project {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: 2px;
   background: var(--fr4-mid);
-  overflow: hidden;
   margin-bottom: 2px;
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s;
 }
-.project:hover { border-color: var(--border2); }
+.project:hover { border-color: var(--border2); z-index: 5; }
 .project.visible { opacity: 1; transform: translateY(0); }
+
+/* Wraps header + body so their size never changes on hover.
+   Clips the thumbnail image corners the way .project used to. */
+.project-surface {
+  overflow: hidden;
+  border-radius: 2px;
+}
 
 /* Silkscreen-style header bar */
 .project-header {
@@ -369,7 +376,30 @@ section { padding: 6rem 0; }
   border-radius: 1px;
 }
 
-.project-body { padding: 1.75rem; }
+.project-body { padding: 1.75rem; display: flex; gap: 1.75rem; align-items: flex-start; }
+.project-thumb {
+  flex-shrink: 0;
+  width: 220px;
+  height: 150px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: var(--fr4-surface);
+  overflow: hidden;
+}
+.project-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.9);
+  transition: filter 0.2s, transform 0.3s;
+}
+a.project:hover .project-thumb img { filter: saturate(1.05); transform: scale(1.03); }
+.project-content { flex: 1; min-width: 0; }
+@media (max-width: 640px) {
+  .project-body { flex-direction: column; }
+  .project-thumb { width: 100%; height: 180px; }
+}
 .project-title {
   font-family: var(--serif);
   font-size: 24px;
@@ -547,26 +577,36 @@ a.project:hover .project-title { color: var(--gold); }
 /* Tags always visible */
 .project-hover-hint { margin-top: 1rem; }
 
-/* Expand panel hidden by default */
+/* Expand panel hidden by default — an overlay pinned to the bottom edge
+   of the card, so it grows downward out of a fixed-size base instead of
+   pushing the card's own height (and page layout) around. */
 .project-expand {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  margin-top: 0;
-  padding-top: 0;
+  padding: 0 1.75rem;
   font-size: 13px;
   font-weight: 300;
   color: var(--silk-dim);
   line-height: 1.8;
-  border-top: 0px solid transparent;
-  transition: max-height 0.4s ease, opacity 0.35s ease, padding-top 0.3s ease, border-color 0.3s ease;
+  background: var(--fr4-mid);
+  border: 1px solid var(--border2);
+  border-top: none;
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.35);
+  pointer-events: none;
+  transition: max-height 0.4s ease, opacity 0.35s ease, padding 0.3s ease;
 }
 a.project:hover .project-expand {
   max-height: 220px;
   opacity: 1;
-  padding-top: 1rem;
-  margin-top: 1rem;
-  border-top: 1px solid var(--border2);
+  padding: 1rem 1.75rem 1.25rem;
+  pointer-events: auto;
 }
 .project-expand strong { color: var(--silk); font-weight: 500; }
 .read-more {
@@ -601,14 +641,12 @@ a.project:hover .read-more { color: var(--gold); }
     <h1 class="hero-name">Ethan Xiong</h1>
     <p class="hero-title">Electrical Engineering · University of Waterloo</p>
     <p class="hero-sub">
-      I design embedded systems, lay out PCBs, and write the firmware that runs on them. 
-      I've worked through the whole design process from creating circuit schematics, 
-      to debugging RF signals, to designing final 3D enclosures.
+      I love hardware; I've designed embedded systems, laid out PCBs, and created full enclosures for my projects. 
     </p>
     <div class="hero-links">
       <a href="#projects" class="btn btn-primary">View projects</a>
       <a href="https://github.com/exion5" target="_blank" class="btn btn-ghost">GitHub ↗</a>
-      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      <a href="#contact" class="btn btn-ghost">Contact me</a>
     </div>
 
     <!-- Decorative copper trace SVG -->
@@ -644,20 +682,20 @@ a.project:hover .read-more { color: var(--gold); }
           my first stepping stone in becoming an Electrical Engineer.
         </p>
         <p>
-          Since then I've designed many projects such as creating a <strong>mechanical keyboard</strong>, 
+          Since then I've designed many projects such as creating a <strong>quadcopter drone</strong>, 
           <strong>Raspberry Pi handheld console</strong>, and an
           <span class="copper">IEEE Technical Design award-winning</span> environmental monitoring system integrating
           mmWave radar, particulate sensors, and a live web dashboard on a Pi Zero 2W.
         </p>
         <p>
-          Most recently I took a full custom PCB from concept to fabrication for my RC Drone project, designing an
+          Currently, I am taking a full custom PCB from idea to fabrication for my RC Drone project, designing an
           Arduino Nano equivalent with integrated boost converter, LiPo charger, USB bridge,
           and battery protection in KiCad, fabricated with JLCPCB.
         </p>
       </div>
       <div class="component-card">
         <div class="component-card-header">
-          <span class="component-ref">U2 — ETHAN XIONG</span>
+          <span class="component-ref">U2 - ETHAN XIONG</span>
           <span class="component-value">1A EE · UWaterloo</span>
         </div>
         <div class="component-rows">
@@ -667,7 +705,7 @@ a.project:hover .read-more { color: var(--gold); }
           </div>
           <div class="comp-row">
             <span class="comp-key">Focus</span>
-            <span class="comp-val">PCB · Digital Hardware · Embedded</span>
+            <span class="comp-val">PCB · Analog Hardware · Embedded</span>
           </div>
           <div class="comp-row">
             <span class="comp-key">EDA</span>
@@ -701,59 +739,78 @@ a.project:hover .read-more { color: var(--gold); }
     <p class="section-label" data-ref="U3">Highlighted Projects</p>
 
     <a class="project" href="projects/scope-monitor.html">
+      <div class="project-surface">
       <div class="project-header">
         <span class="project-refdes">SCOPE Monitor</span>
         <span class="project-award">★ IEEE Technical Award</span>
       </div>
       <div class="project-body">
+        <div class="project-thumb" style="width: 280px; height: 370px;">
+          <img src="images/projects/scope.jpg" alt="SCOPE Monitor project" loading="lazy" />
+        </div>
+        <div class="project-content">
         <h3 class="project-title">SCOPE · Environmental & Security Monitoring System</h3>
         <p class="project-desc">
-          SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating a 60 GHz mmWave
+          SCOPE is a Raspberry Pi Zero 2W-based system with a live Flask web dashboard integrating an mmWave
           radar for detecting movement alongside decibel, particle concentration, and air quality sensors. The toughest part was
           the radar: it needed a custom binary frame parser for a <code>AA FF 03 00</code> header format
           over a bit-banged software UART running at 256 000 baud via <code>pigpio</code>. This was due to a hardware UART-pin conflict with the 
-          PMS5003 particulate sensor on <code>/dev/serial0</code>.
+          PMS5003 particulate sensor taking up the pins on the Raspberry Pi 2W.
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">RPi Zero 2W</span><span class="tag">HLK-LD2450 Radar</span><span class="tag">PMS5003</span><span class="tag">ADS1115 ADC</span><span class="tag">KY-037</span><span class="tag">I²C</span><span class="tag">Software UART</span><span class="tag">Flask</span><span class="tag">pigpio</span></span>
         </div>
-        <div class="project-expand">
-          <p>Custom binary frame parser for <strong>AA FF 03 00</strong> radar protocol · Bit-banged UART at 256 kbaud via pigpio · Dual-UART conflict resolution · systemd service with auto-restart · Live radar target visualization on Flask dashboard</p>
-          <span class="read-more">Read full deep-dive →</span>
         </div>
+      </div>
+      </div>
+      <div class="project-expand">
+        <p>Custom binary frame parser for <strong>AA FF 03 00</strong> radar protocol · Bit-banged UART at 256 kbaud via pigpio · Dual-UART conflict resolution · systemd service with auto-restart · Live radar target visualization on Flask dashboard</p>
+        <span class="read-more">Read full deep-dive →</span>
       </div>
     </a>
 
     <a class="project" href="projects/rc-drone.html">
+      <div class="project-surface">
       <div class="project-header">
         <span class="project-refdes">RC Drone & Controller Transmitter</span>
       </div>
       <div class="project-body">
+        <div class="project-thumb" style="width: 280px; height: 320px;">
+          <img src="images/projects/drone.jpg" alt="RC Drone and Transmitter project" loading="lazy" />
+        </div>
+        <div class="project-content">
         <h3 class="project-title">2.4 GHz Radio-Controlled Drone & Transmitter</h3>
         <p class="project-desc">
           This project involved building a handheld RC transmitter and drone.  
           Both utilize an Arduino Nano as the main brain, and uses NRF24L01 for 2.4 GHz RF. The transmitter utilizes an MPU-6050 for orientation, dual analog joysticks,
-          rotary encoder, and a PCF8574-driven I²C LCD display for proper usage. The drone contains an MPU-6050 for stability / orientation, 
-          and uses 716 coreless motors with 55000 RPM. Power delivery is done through a boost converter from a 3.7V LiPo battery. 
+          rotary encoder, SPDT /SPST switches, and an I²C LCD display for proper usage. The drone contains an MPU-6050 for stability / orientation, 
+          and uses 716 coreless motors with 55000 RPM. Power delivery for both are done through a boost converter from a 3.7V LiPo battery. 
         </p>
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">Arduino Nano</span><span class="tag">NRF24L01</span><span class="tag">MPU-6050</span><span class="tag">KiCad</span><span class="tag">Motor Drive Board</span><span class="tag">Power Delivery</span><span class="tag">SPI / I²C</span><span class="tag">PCB Design</span></span>
         </div>
-        <div class="project-expand">
-          F-Nano (Arduino Nano + onboard NRF24L01) as flight controller · SI2300 N-MOSFET motor drivers with 1N5819 flyback diodes · MPU6050 IMU over I2C for stabilization · MultiWii-based flight firmware · Custom KiCad PWM/motor pin mapping (D3/D5/D6/D9) · 716 coreless motors on an 87×79mm frame · 1S LiHV battery power delivery</p>
-          <span class="read-more">Read full deep-dive →</span>
         </div>
+      </div>
+      </div>
+      <div class="project-expand">
+        <p>F-Nano (Arduino Nano + onboard NRF24L01) as flight controller · SI2300 N-MOSFET motor drivers with 1N5819 flyback diodes · MPU6050 IMU over I2C for stabilization · MultiWii-based flight firmware · Custom KiCad PWM/motor pin mapping (D3/D5/D6/D9) · 716 coreless motors on an 87×79mm frame · 1S LiHV battery power delivery</p>
+        <span class="read-more">Read full deep-dive →</span>
       </div>
     </a>
 
     <a class="project" href="projects/microcontroller.html">
+      <div class="project-surface">
       <div class="project-header">
         <span class="project-refdes">Custom ATMega328P Board</span>
       </div>
       <div class="project-body">
+        <div class="project-thumb" style="width: 280px; height: 350px;">
+          <img src="images/projects/microcontroller.png" alt="Custom ATmega328P board project" loading="lazy" />
+        </div>
+        <div class="project-content">
         <h3 class="project-title">ATmega328P-MU Board · KiCad to JLCPCB</h3>
         <p class="project-desc">
-          A full Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
+          Custom Arduino Nano equivalent designed from scratch in KiCad and fabricated at JLCPCB. 
           Its intended use is for my RC Drone project as a custom flight controller board that can be used wirelessly, so it includes an
           ATmega328P MCU, FT232RL USB-UART bridge, MCP73831 LiPo charger, DW01A + FS8205A battery
           protection, and a TPS61022 boost converter for 5V output with feedback resistors calculated
@@ -763,10 +820,12 @@ a.project:hover .read-more { color: var(--gold); }
         <div class="project-hover-hint">
           <span class="tags"><span class="tag">KiCad</span><span class="tag">ATmega328P</span><span class="tag">FT232RL</span><span class="tag">TPS61022 Boost</span><span class="tag">MCP73831</span><span class="tag">DW01A / FS8205A</span><span class="tag">2-Layer Layout</span><span class="tag">JLCPCB</span></span>
         </div>
-        <div class="project-expand">
-          <p>TPS61022 feedback divider calculation from 0.6V ref · -BATT net isolation for DW01A protection · FT232RL TEST pin / RESET divider fixes · EMI-optimised boost converter placement · Equal-length USB D+/D− differential routing · IPC-2221 trace width calculation</p>
-          <span class="read-more">Read full deep-dive →</span>
         </div>
+      </div>
+      </div>
+      <div class="project-expand">
+        <p>TPS61022 feedback divider calculation from 0.6V ref · -BATT net isolation for DW01A protection · FT232RL TEST pin / RESET divider fixes · EMI-optimised boost converter placement · Equal-length USB D+/D− differential routing · IPC-2221 trace width calculation</p>
+        <span class="read-more">Read full deep-dive →</span>
       </div>
     </a>
 
@@ -784,11 +843,10 @@ a.project:hover .read-more { color: var(--gold); }
       <div class="skill-group">
         <p class="skill-group-label">PCB Design</p>
         <div class="skill-items">
-          <span class="skill-item">KiCad</span>
+          <span class="skill-item">KiCad / Altium</span>
           <span class="skill-item">Multi-Layer Layout</span>
           <span class="skill-item">Power & Signal Integrity</span>
           <span class="skill-item">JLCPCB Workflow</span>
-          <span class="skill-item">Component Sourcing</span>
         </div>
       </div>
       <div class="skill-group">
@@ -796,7 +854,6 @@ a.project:hover .read-more { color: var(--gold); }
         <div class="skill-items">
           <span class="skill-item">ATmega328P / AVR</span>
           <span class="skill-item">Raspberry Pi</span>
-          <span class="skill-item">Arduino Framework</span>
           <span class="skill-item">I²C · SPI · UART</span>
           <span class="skill-item">IoT Development</span>
         </div>
@@ -804,11 +861,10 @@ a.project:hover .read-more { color: var(--gold); }
       <div class="skill-group">
         <p class="skill-group-label">Software</p>
         <div class="skill-items">
-          <span class="skill-item">C / C++</span>
+          <span class="skill-item">C++</span>
           <span class="skill-item">Python</span>
           <span class="skill-item">Flask</span>
-          <span class="skill-item">Linux / systemd</span>
-          <span class="skill-item">Git</span>
+          <span class="skill-item">Java</span>
         </div>
       </div>
       <div class="skill-group">
@@ -818,7 +874,6 @@ a.project:hover .read-more { color: var(--gold); }
           <span class="skill-item">Fusion 360</span>
           <span class="skill-item">OnShape</span>
           <span class="skill-item">3D Printing</span>
-          <span class="skill-item">Woodwork & Hand Tools</span>
         </div>
       </div>
     </div>
@@ -830,10 +885,10 @@ a.project:hover .read-more { color: var(--gold); }
   <section id="contact">
     <p class="section-label" data-ref="U5">Contact</p>
     <div class="contact-wrap">
-      <h2 class="contact-heading">Let's build<br><span class="copper">together.</span></h2>
+      <h2 class="contact-heading">Let's create<br><span class="copper">together.</span></h2>
       <p class="contact-sub">
-        Open to hardware engineering internships and co-op roles for 2026–2027.
-        Reach out if you're working on something interesting.
+        Open to hardware engineering co-op roles for 2026–2027.
+        Reach out to me if you're working on something interesting.
       </p>
       <div class="contact-links">
         <a href="ethanjeffxiong2008@gmail.com" class="btn btn-primary">Email me</a>
